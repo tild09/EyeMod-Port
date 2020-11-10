@@ -13,8 +13,8 @@ public abstract class ClientScreenHandler extends ScreenHandler {
     }
 
     private void confirmScreenOpenToServer() {
-        final PacketByteBuf packetByteBuf = ScreenPacket.newPacket(syncId);
-        packetByteBuf.writeVarInt(ScreenPacket.PacketActions.INIT.ordinal());
+        final PacketByteBuf packetByteBuf = ScreenPacket.newPacket(syncId,
+                PacketAction.DefaultPacketAction.INIT.getActionOrdinal());
         ScreenPacket.sendToServer(packetByteBuf);
     }
 
@@ -25,4 +25,6 @@ public abstract class ClientScreenHandler extends ScreenHandler {
     public boolean canUse(PlayerEntity player) {
         return true;
     }
+
+
 }

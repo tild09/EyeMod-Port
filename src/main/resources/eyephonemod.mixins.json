@@ -3,7 +3,8 @@
   "package": "me.fabric.eyephonemod.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "ItemStackMixin"
+    "ItemStackMixin",
+    "ServerPlayerEntityAccessor"
   ],
   "client": [
   ],

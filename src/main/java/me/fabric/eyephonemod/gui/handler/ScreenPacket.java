@@ -25,9 +25,10 @@ public class ScreenPacket {
     private static final Logger LOGGER = LogManager.getLogger();
 
     @NotNull
-    public static PacketByteBuf newPacket(int syncId) {
+    public static PacketByteBuf newPacket(int syncId, int action) {
         final PacketByteBuf packetByteBuf = new PacketByteBuf(Unpooled.buffer());
         packetByteBuf.writeVarInt(syncId);
+        packetByteBuf.writeVarInt(action);
         return packetByteBuf;
     }
 
@@ -65,13 +66,15 @@ public class ScreenPacket {
         ClientSidePacketRegistryImpl.INSTANCE.register(S2CPacket, ((packetContext, packetByteBuf) -> {
             final int syncId = packetByteBuf.readVarInt();
             if (getClientSyncId() != syncId) {
-                LOGGER.error("Expected sync id of {} but got {} instead!", getClientSyncId(), syncId);
+                LOGGER.error("Expected sync id of {} but got {} instead! Closing screen...", getClientSyncId(), syncId);
+                packetContext.getTaskQueue().execute(() -> MinecraftClient.getInstance().openScreen(null));
                 return;
             }
             final EyePhoneScreen<? extends ClientScreenHandler> clientScreen = getClientScreen();
 
             if (clientScreen == null) {
-                LOGGER.error("Client screen is not an EyePhone screen!");
+                LOGGER.error("Client screen is not an EyePhone screen! Closing screen...");
+                packetContext.getTaskQueue().execute(() -> MinecraftClient.getInstance().openScreen(null));
                 return;
             }
             clientScreen.getEyePhoneScreenHandler().onPacket(packetByteBuf, packetByteBuf.readVarInt());
@@ -82,6 +85,12 @@ public class ScreenPacket {
         ServerSidePacketRegistryImpl.INSTANCE.register(C2SPacket, ((packetContext, packetByteBuf) -> {
             final PlayerEntity player = packetContext.getPlayer();
             final ScreenHandler currentScreenHandler = player.currentScreenHandler;
+
+            if (currentScreenHandler == null) {
+                LOGGER.error("Client player has no opened screen!");
+                return;
+            }
+
             if (!(currentScreenHandler instanceof ServerScreenHandler)) {
                 LOGGER.error("Client player is not opening an EyePhone screen!");
                 return;
@@ -97,9 +106,5 @@ public class ScreenPacket {
 
             ((ServerScreenHandler) currentScreenHandler).onPacket(packetByteBuf, packetByteBuf.readVarInt());
         }));
-    }
-
-    public enum PacketActions {
-        INIT
     }
 }
