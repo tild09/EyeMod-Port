@@ -37,7 +37,7 @@ public class ScreenPacket {
     }
 
     public static void sendToClient(@NotNull PacketByteBuf buffer, @NotNull ServerPlayerEntity target) {
-
+        ServerSidePacketRegistryImpl.INSTANCE.sendToPlayer(target, S2CPacket, buffer);
     }
 
     @Environment(EnvType.CLIENT)

@@ -4,7 +4,7 @@
   "version": "${version}",
   "name": "EyePhone Mod",
   "license": "CC0-1.0",
-  "icon": "assets/eyephonemod/icon.png",
+  "icon": "assets/eyephone/icon.png",
   "environment": "*",
   "entrypoints": {
     "client": [
