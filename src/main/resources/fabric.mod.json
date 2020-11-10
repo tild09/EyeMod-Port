@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "id": "teleportermod",
+  "version": "${version}",
+  "name": "Teleporter Mod",
+  "license": "CC0-1.0",
+  "icon": "assets/eyephonemod/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "me.fabric.eyephonemod.EyePhoneMod"
+    ],
+    "main": [
+      "me.fabric.eyephonemod.EyePhoneMod"
+    ]
+  },
+  "mixins": [
+    "eyephonemod.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.8.2+build.194",
+    "fabric": "*",
+    "minecraft": "1.16.4"
+  }
+}
