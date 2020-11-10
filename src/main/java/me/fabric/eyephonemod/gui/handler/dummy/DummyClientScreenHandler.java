@@ -1,13 +1,13 @@
 package me.fabric.eyephonemod.gui.handler.dummy;
 
-import me.fabric.eyephonemod.gui.Screen;
+import me.fabric.eyephonemod.gui.ScreenRegistry;
 import me.fabric.eyephonemod.gui.handler.ClientScreenHandler;
 import me.fabric.eyephonemod.gui.handler.ScreenPacket;
 import net.minecraft.network.PacketByteBuf;
 
 public class DummyClientScreenHandler extends ClientScreenHandler {
     public DummyClientScreenHandler(int syncId) {
-        super(Screen.DUMMY_GUI.getScreenHandlerType(), syncId);
+        super(ScreenRegistry.DUMMY_GUI.getScreenHandlerType(), syncId);
     }
 
     @Override

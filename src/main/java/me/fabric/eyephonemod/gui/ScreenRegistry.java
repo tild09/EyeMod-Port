@@ -1,26 +1,30 @@
 package me.fabric.eyephonemod.gui;
 
 import me.fabric.eyephonemod.gui.client.DummyScreen;
-import me.fabric.eyephonemod.gui.client.EyePhoneScreen;
 import me.fabric.eyephonemod.gui.handler.ClientScreenHandler;
+import me.fabric.eyephonemod.gui.handler.PacketAction;
 import me.fabric.eyephonemod.gui.handler.dummy.DummyClientScreenHandler;
-import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
+import me.fabric.eyephonemod.gui.handler.dummy.DummyPacketAction;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.util.Identifier;
 
-public enum Screen {
-    DUMMY_GUI(DummyScreen::new, DummyClientScreenHandler::new);
+import java.util.Arrays;
+
+public enum ScreenRegistry {
+    DUMMY_GUI(DummyScreen::new, DummyClientScreenHandler::new, DummyPacketAction::values);
 
     private ScreenHandlerType<? extends ClientScreenHandler> screenHandlerType = null;
     private final ScreenFactory screenFactory;
     private final ClientScreenHandlerFactory<? extends ClientScreenHandler> clientScreenHandlerFactory;
+    private final PacketActionsProvider packetActionsProvider;
     public final String path;
 
-    Screen(ScreenFactory screenFactory, ClientScreenHandlerFactory<? extends ClientScreenHandler> clientScreenHandlerFactory) {
+    ScreenRegistry(ScreenFactory screenFactory, ClientScreenHandlerFactory<? extends ClientScreenHandler> clientScreenHandlerFactory, PacketActionsProvider packetActionsProvider) {
         this.screenFactory = screenFactory;
         this.clientScreenHandlerFactory = clientScreenHandlerFactory;
         this.path = this.name().toLowerCase();
+        this.packetActionsProvider = packetActionsProvider;
     }
 
     public ScreenHandlerType<? extends ClientScreenHandler> getScreenHandlerType() {
@@ -29,14 +33,16 @@ public enum Screen {
     }
 
     public static void registerScreenHandlers(String namespace) {
-        for (Screen value : values()) {
+        PacketAction.PACKET_ACTIONS.addAll(Arrays.asList(PacketAction.DefaultPacketAction.values()));
+        for (ScreenRegistry value : values()) {
             value.screenHandlerType = ScreenHandlerRegistry.registerSimple(new Identifier(namespace, value.path), ((syncId, inventory) -> value.clientScreenHandlerFactory.createNewScreenHandler(syncId)));
+            PacketAction.PACKET_ACTIONS.addAll(Arrays.asList(value.packetActionsProvider.get()));
         }
     }
 
-    public static void registerClientScreens(String namespace) {
-        for (Screen value : values()) {
-            ScreenRegistry.register(value.getScreenHandlerType(), value.screenFactory::createNewScreen);
+    public static void registerClientScreens() {
+        for (ScreenRegistry value : values()) {
+            net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry.register(value.getScreenHandlerType(), value.screenFactory::createNewScreen);
         }
     }
 }

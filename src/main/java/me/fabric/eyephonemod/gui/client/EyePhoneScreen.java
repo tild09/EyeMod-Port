@@ -22,6 +22,8 @@ public abstract class EyePhoneScreen<T extends ClientScreenHandler> extends Hand
 
     public EyePhoneScreen(@NotNull T handler, @NotNull PlayerInventory inventory, @NotNull Text title) {
         super(handler, inventory, title);
+        this.backgroundWidth = 248;
+        this.backgroundHeight = 166;
     }
 
     @Override
@@ -45,17 +47,18 @@ public abstract class EyePhoneScreen<T extends ClientScreenHandler> extends Hand
         RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f);
         final TextureSetting texture = getTexture();
         MinecraftClient.getInstance().getTextureManager().bindTexture(texture.textureId);
-        DrawableHelper.drawTexture(
+        drawTexture(
                 matrices,
                 x,
                 y,
-                texture.offsetX,
-                texture.offsetY,
-                width,
-                height,
-                texture.width,
-                texture.height
-        );
+                getZOffset(),
+                (float) texture.offsetX,
+                (float) texture.offsetY,
+                backgroundWidth,
+                backgroundHeight,
+                texture.height,
+                texture.width
+                );
     }
 
     abstract TextureSetting getTexture();
@@ -63,8 +66,8 @@ public abstract class EyePhoneScreen<T extends ClientScreenHandler> extends Hand
     @SuppressWarnings("deprecation")
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        parents.forEach(p -> p.queryMouseOver(mouseX, mouseY));
         drawBackground(matrices, delta, mouseX, mouseY);
+        parents.forEach(p -> p.queryMouseOver(mouseX, mouseY));
         final MinecraftClient mc = MinecraftClient.getInstance();
         GL11.glEnable(GL11.GL_SCISSOR_TEST);
         GL11.glScissor(0, 0, mc.getWindow().getFramebufferWidth(), mc.getWindow().getFramebufferHeight());

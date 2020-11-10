@@ -1,6 +1,6 @@
 package me.fabric.eyephonemod.gui.handler.dummy;
 
-import me.fabric.eyephonemod.gui.Screen;
+import me.fabric.eyephonemod.gui.ScreenRegistry;
 import me.fabric.eyephonemod.gui.handler.ServerScreenHandler;
 import me.fabric.eyephonemod.item.TaggedItem;
 import net.minecraft.item.ItemStack;
@@ -17,7 +17,7 @@ public class DummyServerScreenHandler extends ServerScreenHandler {
     final ServerPlayerEntity playerEntity;
 
     public DummyServerScreenHandler(int syncId, ServerPlayerEntity player, ItemStack itemStack) {
-        super(Screen.DUMMY_GUI.getScreenHandlerType(), syncId);
+        super(ScreenRegistry.DUMMY_GUI.getScreenHandlerType(), syncId);
         if (!(itemStack.getItem() instanceof TaggedItem))
             throw new RuntimeException("ItemStack is not an item of TaggedItem!");
         phone = itemStack;

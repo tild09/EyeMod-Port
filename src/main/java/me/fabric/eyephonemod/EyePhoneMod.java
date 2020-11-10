@@ -1,7 +1,7 @@
 package me.fabric.eyephonemod;
 
 import me.fabric.eyephonemod.block.BlockRegistry;
-import me.fabric.eyephonemod.gui.Screen;
+import me.fabric.eyephonemod.gui.ScreenRegistry;
 import me.fabric.eyephonemod.gui.handler.ScreenPacket;
 import me.fabric.eyephonemod.item.ItemRegistry;
 import net.fabricmc.api.ClientModInitializer;
@@ -12,7 +12,7 @@ public class EyePhoneMod implements ModInitializer, ClientModInitializer {
     @Override
     public void onInitializeClient() {
         ScreenPacket.initClientScreen();
-        Screen.registerClientScreens(NAMESPACE);
+        ScreenRegistry.registerClientScreens();
     }
 
     @Override
@@ -20,6 +20,6 @@ public class EyePhoneMod implements ModInitializer, ClientModInitializer {
         ScreenPacket.initServerScreen();
         ItemRegistry.registerItems(NAMESPACE);
         BlockRegistry.registerBlocks(NAMESPACE);
-        Screen.registerScreenHandlers(NAMESPACE);
+        ScreenRegistry.registerScreenHandlers(NAMESPACE);
     }
 }

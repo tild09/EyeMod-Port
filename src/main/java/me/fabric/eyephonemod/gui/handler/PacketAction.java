@@ -1,28 +1,15 @@
 package me.fabric.eyephonemod.gui.handler;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
-public interface PacketAction<T extends PacketAction<T>> {
-
-    ArrayList<PacketAction<T>> getActions();
+public interface PacketAction {
+    ArrayList<PacketAction> PACKET_ACTIONS = new ArrayList<>();
 
     default int getActionOrdinal() {
-        return getActions().indexOf(this);
+        return PACKET_ACTIONS.indexOf(this);
     }
 
-    enum DefaultPacketAction implements PacketAction<DefaultPacketAction> {
-        INIT;
-
-        private static final ArrayList<PacketAction<DefaultPacketAction>> actions = new ArrayList<>();
-
-        static {
-            actions.addAll(Arrays.asList(values()));
-        }
-
-        @Override
-        public ArrayList<PacketAction<DefaultPacketAction>> getActions() {
-            return actions;
-        }
+    enum DefaultPacketAction implements PacketAction {
+        INIT
     }
 }
