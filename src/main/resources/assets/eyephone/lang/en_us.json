@@ -1,3 +1,9 @@
 {
-
+  "itemGroup.eyephone.eyephone_group": "EyePhone Series",
+  "item.eyephone.red_phone": "Red Phone",
+  "item.eyephone.white_phone": "White Phone",
+  "item.eyephone.black_phone": "Black Phone",
+  "item.eyephone.blue_phone": "Blue Phone",
+  "block.eyephone.charger_block": "Charger Block",
+  "block.eyephone.server_block": "Server Block"
 }
