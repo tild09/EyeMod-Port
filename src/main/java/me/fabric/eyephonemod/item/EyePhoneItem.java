@@ -2,6 +2,7 @@ package me.fabric.eyephonemod.item;
 
 import me.fabric.eyephonemod.gui.handler.ItemStackScreenHandlerFactory;
 import me.fabric.eyephonemod.gui.handler.dummy.DummyServerScreenHandler;
+import me.fabric.eyephonemod.gui.handler.eyephone.EyePhoneServerScreenHandler;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.screen.ScreenHandler;
@@ -16,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.OptionalInt;
 
-public final class DummyItem extends ScreenHandlingItem {
+public class EyePhoneItem extends ScreenHandlingItem {
     private static final Logger LOGGER = LogManager.getLogger();
     private static final ItemStackScreenHandlerFactory SCREEN_HANDLER_FACTORY = new ItemStackScreenHandlerFactory() {
         @Override
@@ -26,27 +27,23 @@ public final class DummyItem extends ScreenHandlingItem {
 
         @Override
         public @NotNull ScreenHandler createMenu(int syncId, ServerPlayerEntity player, ItemStack itemStack) {
-            return new DummyServerScreenHandler(syncId, player, itemStack);
+            return new EyePhoneServerScreenHandler(syncId, player, itemStack);
         }
     };
 
-    public DummyItem(Settings settings) {
+    public EyePhoneItem(Settings settings) {
         super(settings);
     }
 
+
     @Override
     public CompoundTag deserializeStack(@NotNull CompoundTag compoundTag) {
-        LOGGER.info("Deserializing dummy item");
-        if (!compoundTag.contains("isDummy"))
-            LOGGER.info("Item has not yet been tagged. Try saving and reloading the world.");
-        else LOGGER.info("Item has the tag 'isDummy': {}", compoundTag.getString("isDummy"));
         return compoundTag;
     }
 
     @Override
     public void serializeStack(@NotNull ItemStack itemStack, @NotNull CompoundTag compoundTag) {
-        LOGGER.info("Serializing dummy item");
-        compoundTag.putString("isDummy", "yes is it dummy");
+
     }
 
     @Override

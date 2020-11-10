@@ -1,10 +1,13 @@
 package me.fabric.eyephonemod.gui;
 
 import me.fabric.eyephonemod.gui.client.DummyScreen;
+import me.fabric.eyephonemod.gui.client.EyePhoneScreen;
 import me.fabric.eyephonemod.gui.handler.ClientScreenHandler;
 import me.fabric.eyephonemod.gui.handler.PacketAction;
 import me.fabric.eyephonemod.gui.handler.dummy.DummyClientScreenHandler;
 import me.fabric.eyephonemod.gui.handler.dummy.DummyPacketAction;
+import me.fabric.eyephonemod.gui.handler.eyephone.EyePhoneClientScreenHandler;
+import me.fabric.eyephonemod.gui.handler.eyephone.EyePhonePacketAction;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.util.Identifier;
@@ -12,7 +15,8 @@ import net.minecraft.util.Identifier;
 import java.util.Arrays;
 
 public enum ScreenRegistry {
-    DUMMY_GUI(DummyScreen::new, DummyClientScreenHandler::new, DummyPacketAction::values);
+    DUMMY_GUI(DummyScreen::new, DummyClientScreenHandler::new, DummyPacketAction::values),
+    EYEPHONE_GUI(EyePhoneScreen::new, EyePhoneClientScreenHandler::new, EyePhonePacketAction::values);
 
     private ScreenHandlerType<? extends ClientScreenHandler> screenHandlerType = null;
     private final ScreenFactory screenFactory;

@@ -1,6 +1,6 @@
 package me.fabric.eyephonemod.mixin;
 
-import me.fabric.eyephonemod.item.TaggedItem;
+import me.fabric.eyephonemod.item.ScreenHandlingItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import org.spongepowered.asm.mixin.Mixin;
@@ -15,8 +15,8 @@ public class ItemStackMixin {
 
     @Inject(method = "toTag", at = @At("HEAD"))
     private void onToTag(CompoundTag incomingTag, CallbackInfoReturnable<CompoundTag> cir) {
-        if (!(((ItemStack) (Object) this).getItem() instanceof TaggedItem)) return;
+        if (!(((ItemStack) (Object) this).getItem() instanceof ScreenHandlingItem)) return;
         if (tag == null) return;
-        ((TaggedItem) ((ItemStack) (Object) this).getItem()).serializeStack((((ItemStack) (Object) this)), tag);
+        ((ScreenHandlingItem) ((ItemStack) (Object) this).getItem()).serializeStack((((ItemStack) (Object) this)), tag);
     }
 }

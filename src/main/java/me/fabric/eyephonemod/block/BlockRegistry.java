@@ -10,8 +10,8 @@ import net.minecraft.util.registry.Registry;
 import java.util.function.Supplier;
 
 public enum BlockRegistry {
-    CHARGER_BLOCK(DummyBlock::new),
-    SERVER_BLOCK(DummyBlock::new);
+    CHARGER_SIDE(DummyBlock::new),
+    SERVER_SIDE(DummyBlock::new);
 
     public final String path;
     public final Block block;

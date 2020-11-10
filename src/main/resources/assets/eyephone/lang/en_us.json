@@ -1,9 +1,15 @@
 {
   "itemGroup.eyephone.eyephone_group": "EyePhone Series",
-  "item.eyephone.red_phone": "Red Phone",
-  "item.eyephone.white_phone": "White Phone",
-  "item.eyephone.black_phone": "Black Phone",
-  "item.eyephone.blue_phone": "Blue Phone",
-  "block.eyephone.charger_block": "Charger Block",
-  "block.eyephone.server_block": "Server Block"
+  "item.eyephone.battery": "Battery",
+  "item.eyephone.black_cover": "Black Cover",
+  "item.eyephone.cover": "Cover",
+  "item.eyephone.display": "Display",
+  "item.eyephone.engine": "Engine",
+  "item.eyephone.eyephone": "EyePhone",
+  "item.eyephone.eyephone_op": "EyePhone OP",
+  "item.eyephone.op_chip": "OP Chip",
+  "item.eyephone.red_display": "Red Display",
+  "item.eyephone.wire": "Wire",
+  "block.eyephone.charger_side": "Charger Side",
+  "block.eyephone.server_side": "Server Side"
 }

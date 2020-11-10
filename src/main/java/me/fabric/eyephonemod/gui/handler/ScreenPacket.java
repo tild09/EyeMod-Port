@@ -1,7 +1,7 @@
 package me.fabric.eyephonemod.gui.handler;
 
 import io.netty.buffer.Unpooled;
-import me.fabric.eyephonemod.gui.client.EyePhoneScreen;
+import me.fabric.eyephonemod.gui.client.BaseScreen;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.impl.networking.ClientSidePacketRegistryImpl;
@@ -51,11 +51,11 @@ public class ScreenPacket {
 
     @Nullable
     @Environment(EnvType.CLIENT)
-    public static EyePhoneScreen<? extends ClientScreenHandler> getClientScreen() {
+    public static BaseScreen<? extends ClientScreenHandler> getClientScreen() {
         final Screen currentScreen = MinecraftClient.getInstance().currentScreen;
         if (currentScreen == null) return null;
-        if (!(currentScreen instanceof EyePhoneScreen)) return null;
-        return ((EyePhoneScreen<? extends ClientScreenHandler>) currentScreen);
+        if (!(currentScreen instanceof BaseScreen)) return null;
+        return ((BaseScreen<? extends ClientScreenHandler>) currentScreen);
     }
 
     public static int getServerSyncId(@NotNull ServerPlayerEntity player) {
@@ -70,7 +70,7 @@ public class ScreenPacket {
                 packetContext.getTaskQueue().execute(() -> MinecraftClient.getInstance().openScreen(null));
                 return;
             }
-            final EyePhoneScreen<? extends ClientScreenHandler> clientScreen = getClientScreen();
+            final BaseScreen<? extends ClientScreenHandler> clientScreen = getClientScreen();
 
             if (clientScreen == null) {
                 LOGGER.error("Client screen is not an EyePhone screen! Closing screen...");

@@ -1,4 +1,4 @@
-package me.fabric.eyephonemod.gui.handler.dummy;
+package me.fabric.eyephonemod.gui.handler.eyephone;
 
 import me.fabric.eyephonemod.gui.ScreenRegistry;
 import me.fabric.eyephonemod.gui.handler.ServerScreenHandler;
@@ -10,14 +10,14 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class DummyServerScreenHandler extends ServerScreenHandler {
+public class EyePhoneServerScreenHandler extends ServerScreenHandler {
 
     public static final Logger LOGGER = LogManager.getLogger();
     final ItemStack phone;
     final ServerPlayerEntity playerEntity;
 
-    public DummyServerScreenHandler(int syncId, ServerPlayerEntity player, ItemStack itemStack) {
-        super(ScreenRegistry.DUMMY_GUI.getScreenHandlerType(), syncId);
+    public EyePhoneServerScreenHandler(int syncId, ServerPlayerEntity player, ItemStack itemStack) {
+        super(ScreenRegistry.EYEPHONE_GUI.getScreenHandlerType(), syncId);
         if (!(itemStack.getItem() instanceof ScreenHandlingItem))
             throw new RuntimeException("ItemStack is not an item of TaggedItem!");
         phone = itemStack;
@@ -32,7 +32,7 @@ public class DummyServerScreenHandler extends ServerScreenHandler {
 
     @Override
     public void onPacket(PacketByteBuf packetByteBuf, int packetAction) {
-        if (packetAction == DummyPacketAction.MOUSE_CLICK.getActionOrdinal()) {
+        if (packetAction == EyePhonePacketAction.MOUSE_CLICK.getActionOrdinal()) {
             final double mouseX = packetByteBuf.readDouble();
             final double mouseY = packetByteBuf.readDouble();
             LOGGER.info("Got client mouse action of {} {}", mouseX, mouseY);

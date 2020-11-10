@@ -14,10 +14,16 @@ import java.util.function.Supplier;
 
 public enum ItemRegistry {
     // phones variation
-    RED_PHONE(DummyItem::new),
-    WHITE_PHONE(DummyItem::new),
-    BLACK_PHONE(DummyItem::new),
-    BLUE_PHONE(DummyItem::new);
+    BATTERY(DummyItem::new),
+    BLACK_COVER(DummyItem::new),
+    COVER(DummyItem::new),
+    DISPLAY(DummyItem::new),
+    ENGINE(DummyItem::new),
+    EYEPHONE(EyePhoneItem::new),
+    EYEPHONE_OP(DummyItem::new),
+    OP_CHIP(DummyItem::new),
+    RED_DISPLAY(DummyItem::new),
+    WIRE(DummyItem::new);
 
     public final String path;
     private volatile Item item = null;
