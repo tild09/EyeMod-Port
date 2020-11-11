@@ -1,8 +1,11 @@
 package me.fabric.eyephonemod.gui.handler.eyephone;
 
 import me.fabric.eyephonemod.gui.ScreenRegistry;
+import me.fabric.eyephonemod.gui.handler.PacketAction;
+import me.fabric.eyephonemod.gui.handler.ScreenPacket;
 import me.fabric.eyephonemod.gui.handler.ServerScreenHandler;
 import me.fabric.eyephonemod.item.ScreenHandlingItem;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
@@ -22,24 +25,35 @@ public class EyePhoneServerScreenHandler extends ServerScreenHandler {
             throw new RuntimeException("ItemStack is not an item of TaggedItem!");
         phone = itemStack;
         playerEntity = player;
-        if (phone.getTag() != null) {
-            final CompoundTag tag = phone.getTag();
-            if (tag.contains("mouseX") && tag.contains("mouseY")) {
-                LOGGER.info("Item has already a tag of mouseX[{}] mouseY[{}]", tag.getDouble("mouseX"), tag.getDouble("mouseY"));
-            }
-        }
     }
 
     @Override
     public void onPacket(PacketByteBuf packetByteBuf, int packetAction) {
-        if (packetAction == EyePhonePacketAction.MOUSE_CLICK.getActionOrdinal()) {
-            final double mouseX = packetByteBuf.readDouble();
-            final double mouseY = packetByteBuf.readDouble();
-            LOGGER.info("Got client mouse action of {} {}", mouseX, mouseY);
-            final CompoundTag tag = phone.getOrCreateTag();
-            tag.putDouble("mouseX", mouseX);
-            tag.putDouble("mouseY", mouseY);
-            phone.setTag(tag);
+        if (packetAction == EyePhonePacketAction.PHONE_NAME_UPDATE.getActionOrdinal()) {
+            updatePhoneName(packetByteBuf.readString());
+        } else if (packetAction == PacketAction.DefaultPacketAction.INIT.getActionOrdinal()) {
+            sendEntryUpdates();
         }
+    }
+
+    private void sendEntryUpdates() {
+        final CompoundTag phoneInfo = phone.getOrCreateSubTag("phoneInfo");
+        if (!phoneInfo.contains("name")) return;
+        final PacketByteBuf packetByteBuf = ScreenPacket.newPacket(syncId, EyePhonePacketAction.PHONE_NAME_UPDATE.getActionOrdinal());
+        packetByteBuf.writeString(phoneInfo.getString("name"));
+        LOGGER.info("S2C: PHONE_NAME_UPDATE {}", syncId);
+        ScreenPacket.sendToClient(packetByteBuf, playerEntity);
+    }
+
+    private void updatePhoneName(String name) {
+        final CompoundTag phoneInfo = phone.getOrCreateSubTag("phoneInfo");
+        phoneInfo.putString("name", name);
+        phone.putSubTag("phoneInfo", phoneInfo);
+    }
+
+    @Override
+    public void close(PlayerEntity player) {
+        super.close(player);
+        LOGGER.info("Closing server screen handler {}", syncId);
     }
 }

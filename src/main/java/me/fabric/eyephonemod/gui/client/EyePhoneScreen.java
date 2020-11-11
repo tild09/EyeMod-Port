@@ -1,12 +1,19 @@
 package me.fabric.eyephonemod.gui.client;
 
 import me.fabric.eyephonemod.EyePhoneMod;
+import me.fabric.eyephonemod.gui.client.element.CenteredPanel;
+import me.fabric.eyephonemod.gui.client.element.TextField;
 import me.fabric.eyephonemod.gui.handler.ClientScreenHandler;
 import me.fabric.eyephonemod.gui.handler.eyephone.EyePhoneClientScreenHandler;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
+import org.lwjgl.glfw.GLFW;
+
+import java.util.Optional;
 
 public class EyePhoneScreen<T extends ClientScreenHandler> extends BaseScreen<T> {
     public static final TextureSetting BG_TEXTURE = new TextureSetting(
@@ -19,10 +26,44 @@ public class EyePhoneScreen<T extends ClientScreenHandler> extends BaseScreen<T>
     public EyePhoneScreen(@NotNull T handler, @NotNull PlayerInventory inventory, @NotNull Text title) {
         super(handler, inventory, title);
         if (!(handler instanceof EyePhoneClientScreenHandler))
-            throw new RuntimeException("Handler must be a DummyClientScreenHandler type!");
+            throw new RuntimeException("Handler must be an EyePhoneClientScreenHandler type!");
         this.handler = (EyePhoneClientScreenHandler) handler;
         this.backgroundWidth = 201;
         this.backgroundHeight = 256;
+        setWidgets();
+    }
+
+    private void setWidgets() {
+        final CenteredPanel panel = new CenteredPanel(backgroundWidth, backgroundHeight);
+        final TextField phoneNameTextField = new TextField(50, 15, handler::updatePhoneName, 10, 50);
+        handler.setServerUpdateListener(phoneNameTextField::write);
+        panel.addChild(phoneNameTextField);
+        parents.add(panel);
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        return parents.stream().anyMatch(p -> p.mouseClicked(mouseX, mouseY, button));
+    }
+
+    @Override
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        return parents.stream().anyMatch(p -> p.mouseReleased(mouseX, mouseY, button));
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (shouldCloseOnEsc() && keyCode == GLFW.GLFW_KEY_ESCAPE) {
+            onClose();
+            Optional.ofNullable(MinecraftClient.getInstance().player).ifPresent(ClientPlayerEntity::closeHandledScreen);
+            return true;
+        }
+        return parents.stream().anyMatch(p -> p.keyPressed(keyCode, scanCode, modifiers));
+    }
+
+    @Override
+    public boolean charTyped(char chr, int keyCode) {
+        return parents.stream().anyMatch(p -> p.charTyped(chr, keyCode));
     }
 
     @Override

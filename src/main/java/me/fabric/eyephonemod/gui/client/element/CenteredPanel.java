@@ -26,8 +26,12 @@ public class CenteredPanel implements ParentElement, Drawable {
     }
 
     public void init(int parentWidth, int parentHeight) {
-        drawX = (parentHeight - height) / 2;
-        drawY = (parentWidth - width) / 2;
+        drawX = (parentWidth - width) / 2;
+        drawY = (parentHeight - height) / 2;
+        children.forEach(c -> {
+            c.setParentX(drawX);
+            c.setParentY(drawY);
+        });
     }
 
     @Override
@@ -57,16 +61,48 @@ public class CenteredPanel implements ParentElement, Drawable {
 
     public void addChild(DrawableElement child) {
         children.add(child);
+        child.setParentX(drawX);
+        child.setParentY(drawY);
     }
 
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        children.forEach(e -> e.render(matrices, mouseX, mouseY, delta, drawX, drawY));
+        children.forEach(e -> e.render(matrices, mouseX, mouseY, delta));
     }
 
     public void queryMouseOver(double mouseX, double mouseY) {
         children.forEach(c -> {
             if (c.isMouseOver(mouseX, mouseY)) c.mouseOver(mouseX, mouseY);
         });
+    }
+
+    @Override
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        return children.stream().anyMatch(c -> {
+            final boolean mouseOver = c.isMouseOver(mouseX, mouseY);
+            if (mouseOver) c.mouseReleased(mouseX, mouseY, button);
+            c.setFocused(mouseOver);
+            return mouseOver;
+        });
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        return children.stream().anyMatch(c -> c.mouseClicked(mouseX, mouseY, button));
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        return children.stream().anyMatch(c -> c.keyPressed(keyCode, scanCode, modifiers));
+    }
+
+    @Override
+    public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
+        return children.stream().anyMatch(c -> c.keyReleased(keyCode, scanCode, modifiers));
+    }
+
+    @Override
+    public boolean charTyped(char chr, int keyCode) {
+        return children.stream().anyMatch(c -> c.charTyped(chr, keyCode));
     }
 }

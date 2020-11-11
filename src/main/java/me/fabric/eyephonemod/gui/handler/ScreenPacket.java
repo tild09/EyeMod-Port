@@ -45,6 +45,7 @@ public class ScreenPacket {
     public static int getClientSyncId() {
         final Screen currentScreen = MinecraftClient.getInstance().currentScreen;
         if (currentScreen == null) return -1;
+        LOGGER.info("Current screen is type of {}", currentScreen.getClass().getSimpleName());
         if (!(currentScreen instanceof HandledScreen)) return -1;
         return ((HandledScreen<?>) currentScreen).getScreenHandler().syncId;
     }
@@ -65,8 +66,10 @@ public class ScreenPacket {
     public static void initClientScreen() {
         ClientSidePacketRegistryImpl.INSTANCE.register(S2CPacket, ((packetContext, packetByteBuf) -> {
             final int syncId = packetByteBuf.readVarInt();
+            final int packetAction = packetByteBuf.readVarInt();
             if (getClientSyncId() != syncId) {
                 LOGGER.error("Expected sync id of {} but got {} instead! Closing screen...", getClientSyncId(), syncId);
+                LOGGER.error("Packet action: {}", PacketAction.PACKET_ACTIONS.get(packetAction));
                 packetContext.getTaskQueue().execute(() -> MinecraftClient.getInstance().openScreen(null));
                 return;
             }
@@ -77,7 +80,7 @@ public class ScreenPacket {
                 packetContext.getTaskQueue().execute(() -> MinecraftClient.getInstance().openScreen(null));
                 return;
             }
-            clientScreen.getEyePhoneScreenHandler().onPacket(packetByteBuf, packetByteBuf.readVarInt());
+            clientScreen.getEyePhoneScreenHandler().onPacket(packetByteBuf, packetAction);
         }));
     }
 

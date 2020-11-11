@@ -4,7 +4,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import me.fabric.eyephonemod.gui.client.element.CenteredPanel;
 import me.fabric.eyephonemod.gui.handler.ClientScreenHandler;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.util.math.MatrixStack;
@@ -27,6 +26,7 @@ public abstract class BaseScreen<T extends ClientScreenHandler> extends HandledS
     @Override
     public void init(MinecraftClient client, int width, int height) {
         super.init(client, width, height);
+        handler.confirmScreenOpenToServer();
         parents.forEach(e -> e.init(width, height));
     }
 
@@ -56,7 +56,7 @@ public abstract class BaseScreen<T extends ClientScreenHandler> extends HandledS
                 backgroundHeight,
                 texture.height,
                 texture.width
-                );
+        );
     }
 
     abstract TextureSetting getTexture();
@@ -69,7 +69,7 @@ public abstract class BaseScreen<T extends ClientScreenHandler> extends HandledS
         final MinecraftClient mc = MinecraftClient.getInstance();
         GL11.glEnable(GL11.GL_SCISSOR_TEST);
         GL11.glScissor(0, 0, mc.getWindow().getFramebufferWidth(), mc.getWindow().getFramebufferHeight());
-        parents.forEach (p -> p.render(matrices, mouseX, mouseY, delta));
+        parents.forEach(p -> p.render(matrices, mouseX, mouseY, delta));
         GL11.glDisable(GL11.GL_SCISSOR_TEST);
         DiffuseLighting.disable();
         // Needed because super.render leaves dirty state
@@ -91,6 +91,7 @@ public abstract class BaseScreen<T extends ClientScreenHandler> extends HandledS
             setZOffset(0); // ? questionable
             itemRenderer.zOffset = 0.0f;
         }
+        DiffuseLighting.enable();
 //        renderTooltip(matrices, mouseX, mouseY)
     }
 }
