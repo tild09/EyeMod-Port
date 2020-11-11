@@ -18,6 +18,7 @@ public class EyePhoneServerScreenHandler extends ServerScreenHandler {
     public static final Logger LOGGER = LogManager.getLogger();
     final ItemStack phone;
     final ServerPlayerEntity playerEntity;
+    final EyePhoneContext eyePhoneContext;
 
     public EyePhoneServerScreenHandler(int syncId, ServerPlayerEntity player, ItemStack itemStack) {
         super(ScreenRegistry.EYEPHONE_GUI.getScreenHandlerType(), syncId);
@@ -25,6 +26,7 @@ public class EyePhoneServerScreenHandler extends ServerScreenHandler {
             throw new RuntimeException("ItemStack is not an item of TaggedItem!");
         phone = itemStack;
         playerEntity = player;
+        eyePhoneContext = new EyePhoneContext(phone.getOrCreateTag());
     }
 
     @Override
@@ -33,15 +35,17 @@ public class EyePhoneServerScreenHandler extends ServerScreenHandler {
             updatePhoneName(packetByteBuf.readString());
         } else if (packetAction == PacketAction.DefaultPacketAction.INIT.getActionOrdinal()) {
             sendEntryUpdates();
+        } else if (packetAction == EyePhonePacketAction.PHONE_ENTRY_UPDATE.getActionOrdinal()) {
+            final String key = packetByteBuf.readString();
+            final String value = packetByteBuf.readString();
+            eyePhoneContext.updateTag(key, value);
         }
     }
 
     private void sendEntryUpdates() {
-        final CompoundTag phoneInfo = phone.getOrCreateSubTag("phoneInfo");
-        if (!phoneInfo.contains("name")) return;
-        final PacketByteBuf packetByteBuf = ScreenPacket.newPacket(syncId, EyePhonePacketAction.PHONE_NAME_UPDATE.getActionOrdinal());
-        packetByteBuf.writeString(phoneInfo.getString("name"));
-        LOGGER.info("S2C: PHONE_NAME_UPDATE {}", syncId);
+        final PacketByteBuf packetByteBuf = ScreenPacket.newPacket(syncId, EyePhonePacketAction.PHONE_ENTRIES_UPDATE.getActionOrdinal());
+        packetByteBuf.writeString(eyePhoneContext.name);
+        packetByteBuf.writeString(eyePhoneContext.backgroundIdentifier);
         ScreenPacket.sendToClient(packetByteBuf, playerEntity);
     }
 
@@ -55,5 +59,6 @@ public class EyePhoneServerScreenHandler extends ServerScreenHandler {
     public void close(PlayerEntity player) {
         super.close(player);
         LOGGER.info("Closing server screen handler {}", syncId);
+        eyePhoneContext.applyChanges(phone);
     }
 }

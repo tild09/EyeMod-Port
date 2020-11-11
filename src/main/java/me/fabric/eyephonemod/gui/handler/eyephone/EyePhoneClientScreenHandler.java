@@ -7,11 +7,12 @@ import net.minecraft.network.PacketByteBuf;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 public class EyePhoneClientScreenHandler extends ClientScreenHandler {
 
-    private Consumer<String> onServerSendPhoneEntryUpdate = (s) -> {};
+    private BiConsumer<String, String> phoneUpdateListener = (s, t) -> {
+    };
     private static final Logger LOGGER = LogManager.getLogger();
 
     public EyePhoneClientScreenHandler(int syncId) {
@@ -20,19 +21,19 @@ public class EyePhoneClientScreenHandler extends ClientScreenHandler {
 
     @Override
     public void onPacket(PacketByteBuf packetByteBuf, int packetAction) {
-        if (packetAction == EyePhonePacketAction.PHONE_NAME_UPDATE.getActionOrdinal()) {
-            onServerSendPhoneEntryUpdate.accept(packetByteBuf.readString());
+        if (packetAction == EyePhonePacketAction.PHONE_ENTRIES_UPDATE.getActionOrdinal()) {
+            phoneUpdateListener.accept(packetByteBuf.readString(), packetByteBuf.readString());
         }
     }
 
     public void updatePhoneName(String name) {
-        final PacketByteBuf packetByteBuf = ScreenPacket.newPacket(syncId, EyePhonePacketAction.PHONE_NAME_UPDATE.getActionOrdinal());
+        final PacketByteBuf packetByteBuf = ScreenPacket.newPacket(syncId, EyePhonePacketAction.PHONE_ENTRY_UPDATE.getActionOrdinal());
+        packetByteBuf.writeString(EyePhoneContext.Attr.NAME.camelCase);
         packetByteBuf.writeString(name);
-        LOGGER.info("C2S: PHONE_NAME_UPDATE {}", syncId);
         ScreenPacket.sendToServer(packetByteBuf);
     }
 
-    public void setServerUpdateListener(Consumer<String> listener) {
-        onServerSendPhoneEntryUpdate = listener;
+    public void setPhoneUpdateListener(BiConsumer<String, String> listener) {
+        phoneUpdateListener = listener;
     }
 }
