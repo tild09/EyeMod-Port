@@ -61,8 +61,6 @@ public class CenteredPanel implements ParentElement, Drawable {
 
     public void addChild(DrawableElement child) {
         children.add(child);
-        child.setParentX(drawX);
-        child.setParentY(drawY);
     }
 
     @Override

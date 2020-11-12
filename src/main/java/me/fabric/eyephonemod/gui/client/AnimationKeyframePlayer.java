@@ -58,7 +58,7 @@ public class AnimationKeyframePlayer<T> {
         PERSISTENT {
             public void prepare(AnimationKeyframePlayer<?> player) {
                 player.currentFrame++;
-                player.currentFrame = Math.min(player.currentFrame, player.numberOfFrames);
+                player.currentFrame = Math.min(player.currentFrame, player.numberOfFrames - 1);
             }
         },
         REPEATING {

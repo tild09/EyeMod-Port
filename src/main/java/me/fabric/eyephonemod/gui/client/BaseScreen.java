@@ -1,6 +1,7 @@
 package me.fabric.eyephonemod.gui.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import me.fabric.eyephonemod.gui.client.element.BottomRightAnchoredPanel;
 import me.fabric.eyephonemod.gui.client.element.CenteredPanel;
 import me.fabric.eyephonemod.gui.client.element.DrawableElement;
 import me.fabric.eyephonemod.gui.handler.ClientScreenHandler;
@@ -18,7 +19,7 @@ import java.util.ArrayList;
 
 public abstract class BaseScreen<T extends ClientScreenHandler> extends HandledScreen<T> {
 
-    ArrayList<CenteredPanel> parents = new ArrayList<>();
+    ArrayList<BottomRightAnchoredPanel> parents = new ArrayList<>();
 
     public BaseScreen(@NotNull T handler, @NotNull PlayerInventory inventory, @NotNull Text title) {
         super(handler, inventory, title);

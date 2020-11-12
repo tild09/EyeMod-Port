@@ -10,18 +10,18 @@ public class EyePhoneContext {
     public String name;
     public String backgroundIdentifier;
     private static final EyePhoneContext DEF_CONTEXT = new EyePhoneContext("EyePhone", EyePhoneMod.NAMESPACE + ":textures/background/default.png");
-
+    public static final String PHONE_INFO = "phoneInfo";
     private EyePhoneContext(String name, String backgroundIdentifier) {
         this.name = name;
         this.backgroundIdentifier = backgroundIdentifier;
     }
 
     public EyePhoneContext(CompoundTag itemStackTag) {
-        if (!itemStackTag.contains("phoneInfo")) {
+        if (!itemStackTag.contains(PHONE_INFO)) {
             this.name = DEF_CONTEXT.name;
             this.backgroundIdentifier = DEF_CONTEXT.backgroundIdentifier;
         } else {
-            final CompoundTag phoneInfo = itemStackTag.getCompound("phoneInfo");
+            final CompoundTag phoneInfo = itemStackTag.getCompound(PHONE_INFO);
             this.name = getStringOrDefault(phoneInfo, Attr.NAME.camelCase, DEF_CONTEXT.name);
             this.backgroundIdentifier = getStringOrDefault(phoneInfo, Attr.BACKGROUND_ID.camelCase, DEF_CONTEXT.backgroundIdentifier);
         }
@@ -33,11 +33,11 @@ public class EyePhoneContext {
     }
 
     public void applyChanges(ItemStack phone) {
-        final CompoundTag phoneInfo = phone.getOrCreateSubTag("phoneInfo");
+        final CompoundTag phoneInfo = phone.getOrCreateSubTag(PHONE_INFO);
         for (Attr value : Attr.values()) {
             value.putInTag(phoneInfo, this);
         }
-        phone.putSubTag("phoneInfo", phoneInfo);
+        phone.putSubTag(PHONE_INFO, phoneInfo);
     }
 
     public enum Attr {

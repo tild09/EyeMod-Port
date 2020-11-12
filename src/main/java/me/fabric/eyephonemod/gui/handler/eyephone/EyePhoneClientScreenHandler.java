@@ -3,16 +3,24 @@ package me.fabric.eyephonemod.gui.handler.eyephone;
 import me.fabric.eyephonemod.gui.ScreenRegistry;
 import me.fabric.eyephonemod.gui.handler.ClientScreenHandler;
 import me.fabric.eyephonemod.gui.handler.ScreenPacket;
+import me.fabric.eyephonemod.item.ItemRegistry;
 import net.minecraft.network.PacketByteBuf;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 public class EyePhoneClientScreenHandler extends ClientScreenHandler {
 
-    private BiConsumer<String, String> phoneUpdateListener = (s, t) -> {
+    private Consumer<String> phoneNameUpdateListener = (s) -> {
     };
+
+    private Consumer<String> phoneBgUpdateListener = (s) -> {
+    };
+
+    private Consumer<String> phoneTypeUpdateListener = (s) -> {
+    };
+
     private static final Logger LOGGER = LogManager.getLogger();
 
     public EyePhoneClientScreenHandler(int syncId) {
@@ -22,7 +30,9 @@ public class EyePhoneClientScreenHandler extends ClientScreenHandler {
     @Override
     public void onPacket(PacketByteBuf packetByteBuf, int packetAction) {
         if (packetAction == EyePhonePacketAction.PHONE_ENTRIES_UPDATE.getActionOrdinal()) {
-            phoneUpdateListener.accept(packetByteBuf.readString(), packetByteBuf.readString());
+            phoneNameUpdateListener.accept(packetByteBuf.readString());
+            phoneBgUpdateListener.accept(packetByteBuf.readString());
+            phoneTypeUpdateListener.accept(packetByteBuf.readEnumConstant(ItemRegistry.class).path);
         }
     }
 
@@ -33,7 +43,15 @@ public class EyePhoneClientScreenHandler extends ClientScreenHandler {
         ScreenPacket.sendToServer(packetByteBuf);
     }
 
-    public void setPhoneUpdateListener(BiConsumer<String, String> listener) {
-        phoneUpdateListener = listener;
+    public void setPhoneNameUpdateListener(Consumer<String> listener) {
+        phoneNameUpdateListener = listener;
+    }
+
+    public void setPhoneBgUpdateListener(Consumer<String> phoneBgUpdateListener) {
+        this.phoneBgUpdateListener = phoneBgUpdateListener;
+    }
+
+    public void setPhoneTypeUpdateListener(Consumer<String> phoneTypeUpdateListener) {
+        this.phoneTypeUpdateListener = phoneTypeUpdateListener;
     }
 }

@@ -4,6 +4,7 @@ import me.fabric.eyephonemod.gui.ScreenRegistry;
 import me.fabric.eyephonemod.gui.handler.PacketAction;
 import me.fabric.eyephonemod.gui.handler.ScreenPacket;
 import me.fabric.eyephonemod.gui.handler.ServerScreenHandler;
+import me.fabric.eyephonemod.item.EyePhoneItem;
 import me.fabric.eyephonemod.item.ScreenHandlingItem;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -46,6 +47,7 @@ public class EyePhoneServerScreenHandler extends ServerScreenHandler {
         final PacketByteBuf packetByteBuf = ScreenPacket.newPacket(syncId, EyePhonePacketAction.PHONE_ENTRIES_UPDATE.getActionOrdinal());
         packetByteBuf.writeString(eyePhoneContext.name);
         packetByteBuf.writeString(eyePhoneContext.backgroundIdentifier);
+        packetByteBuf.writeEnumConstant(((EyePhoneItem) phone.getItem()).getItemRegistry());
         ScreenPacket.sendToClient(packetByteBuf, playerEntity);
     }
 

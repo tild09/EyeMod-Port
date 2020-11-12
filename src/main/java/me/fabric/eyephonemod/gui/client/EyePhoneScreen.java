@@ -1,8 +1,7 @@
 package me.fabric.eyephonemod.gui.client;
 
 import me.fabric.eyephonemod.EyePhoneMod;
-import me.fabric.eyephonemod.gui.client.element.CenteredPanel;
-import me.fabric.eyephonemod.gui.client.element.DrawableElement;
+import me.fabric.eyephonemod.gui.client.element.BottomRightAnchoredPanel;
 import me.fabric.eyephonemod.gui.client.element.TextField;
 import me.fabric.eyephonemod.gui.handler.ClientScreenHandler;
 import me.fabric.eyephonemod.gui.handler.eyephone.EyePhoneClientScreenHandler;
@@ -19,33 +18,44 @@ import org.lwjgl.glfw.GLFW;
 import java.util.Optional;
 
 public class EyePhoneScreen<T extends ClientScreenHandler> extends BaseScreen<T> {
+    static final int PADDING = 20;
+    static final int SIZE = 256;
     public static final TextureSetting BG_TEXTURE = new TextureSetting(
             new Identifier(EyePhoneMod.NAMESPACE, "textures/gui/eyepod_gui.png"),
-            128, 128
+            SIZE, SIZE
     );
+    static final int BG_WIDTH = 88*2;
+    static final int BG_HEIGHT = 118*2;
 
     final EyePhoneClientScreenHandler handler;
+    final AnimationKeyframePlayer<Integer> onShowAnimationPlayer = new AnimationKeyframePlayer<>(
+            0, 8,
+            (d, f, t) -> (int)((t - f) * d + f),
+            20,
+            AnimationKeyframePlayer.Ease.QUAD_OUT,
+            AnimationKeyframePlayer.Type.PERSISTENT
+    );
 
     @Nullable
     private TextureSetting customBackground = null;
+    private int currentY = 0;
 
     public EyePhoneScreen(@NotNull T handler, @NotNull PlayerInventory inventory, @NotNull Text title) {
         super(handler, inventory, title);
         if (!(handler instanceof EyePhoneClientScreenHandler))
             throw new RuntimeException("Handler must be an EyePhoneClientScreenHandler type!");
         this.handler = (EyePhoneClientScreenHandler) handler;
-        this.backgroundWidth = 88;
-        this.backgroundHeight = 118;
+        this.backgroundWidth = BG_WIDTH;
+        this.backgroundHeight = BG_HEIGHT;
         setWidgets();
     }
 
     private void setWidgets() {
-        final CenteredPanel panel = new CenteredPanel(backgroundWidth, backgroundHeight);
+        final BottomRightAnchoredPanel panel = new BottomRightAnchoredPanel(backgroundWidth, backgroundHeight, 20, 20);
         final TextField phoneNameTextField = new TextField(50, 15, handler::updatePhoneName, 10, 50);
-        handler.setPhoneUpdateListener((name, identifier) -> {
-            phoneNameTextField.write(name);
-            updateBackgroundIdentifier(identifier);
-        });
+        handler.setPhoneNameUpdateListener(phoneNameTextField::write);
+        handler.setPhoneBgUpdateListener(this::updateBackgroundIdentifier);
+        handler.setPhoneTypeUpdateListener(s -> System.out.println("Phone type is " + s));
         panel.addChild(phoneNameTextField);
         parents.add(panel);
     }
@@ -54,7 +64,7 @@ public class EyePhoneScreen<T extends ClientScreenHandler> extends BaseScreen<T>
         final String[] split = identifier.split(":", 2);
         customBackground = new TextureSetting(
                 new Identifier(split[0], split[1]),
-                88, 118
+                SIZE, SIZE
         );
     }
 
@@ -90,21 +100,28 @@ public class EyePhoneScreen<T extends ClientScreenHandler> extends BaseScreen<T>
 
     @Override
     protected void drawBackground(MatrixStack matrices, float delta, int mouseX, int mouseY) {
-        DrawableElement.coloredRect(0,
-                0,
-                MinecraftClient.getInstance().getWindow().getScaledWidth(),
-                MinecraftClient.getInstance().getWindow().getScaledHeight(),
-                0x80808080
+        if (customBackground == null) return;
+
+        MinecraftClient.getInstance().getTextureManager().bindTexture(customBackground.textureId);
+        drawTexture(
+                matrices,
+                width - backgroundWidth - PADDING,
+                height - backgroundHeight - PADDING - currentY,
+                getZOffset(),
+                (float) customBackground.offsetX,
+                (float) customBackground.offsetY,
+                backgroundWidth,
+                backgroundHeight,
+                customBackground.height,
+                customBackground.width
         );
 
-        if (customBackground == null) return;
-        super.drawBackground(matrices, delta, mouseX, mouseY);
         final TextureSetting texture = BG_TEXTURE;
         MinecraftClient.getInstance().getTextureManager().bindTexture(texture.textureId);
         drawTexture(
                 matrices,
-                x,
-                y,
+                width - backgroundWidth - PADDING,
+                height - backgroundHeight - PADDING - currentY,
                 getZOffset(),
                 (float) texture.offsetX,
                 (float) texture.offsetY,
@@ -118,6 +135,12 @@ public class EyePhoneScreen<T extends ClientScreenHandler> extends BaseScreen<T>
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         if (customBackground == null) return;
+        updateYPlayer();
+        parents.forEach(p -> p.setBottomPadding(PADDING - 8 + currentY));
         super.render(matrices, mouseX, mouseY, delta);
+    }
+
+    private void updateYPlayer() {
+        currentY = onShowAnimationPlayer.next();
     }
 }

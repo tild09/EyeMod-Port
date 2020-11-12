@@ -19,13 +19,13 @@ public enum ItemRegistry {
     RED_DISPLAY(DummyItem::new),
     EYEPHONE(EyePhoneItem::new),
     EYEPHONE_OP(DummyItem::new),
-    OP_CHIP(DummyItem::new),
 
     // phones components
     DISPLAY(DummyItem::new),
     BATTERY(DummyItem::new),
     ENGINE(DummyItem::new),
     WIRE(DummyItem::new),
+    OP_CHIP(DummyItem::new),
 
     // cases
     CASE_BLACK(DummyItem::new),
@@ -46,30 +46,36 @@ public enum ItemRegistry {
     CASE_YELLOW(DummyItem::new),
 
     // phones
-    PHONE_BLACK(EyePhoneItem::new),
-    PHONE_BLUE(EyePhoneItem::new),
-    PHONE_BROWN(EyePhoneItem::new),
-    PHONE_CYAN(EyePhoneItem::new),
-    PHONE_GRAY(EyePhoneItem::new),
-    PHONE_GREEN(EyePhoneItem::new),
-    PHONE_LIGHT_BLUE(EyePhoneItem::new),
-    PHONE_LIGHT_GRAY(EyePhoneItem::new),
-    PHONE_LIME(EyePhoneItem::new),
-    PHONE_MAGENTA(EyePhoneItem::new),
-    PHONE_ORANGE(EyePhoneItem::new),
-    PHONE_PINK(EyePhoneItem::new),
-    PHONE_PURPLE(EyePhoneItem::new),
-    PHONE_RED(EyePhoneItem::new),
-    PHONE_WHITE(EyePhoneItem::new),
-    PHONE_YELLOW(EyePhoneItem::new);
+    PHONE_BLACK(EyePhoneItem::new, true),
+    PHONE_BLUE(EyePhoneItem::new, true),
+    PHONE_BROWN(EyePhoneItem::new, true),
+    PHONE_CYAN(EyePhoneItem::new, true),
+    PHONE_GRAY(EyePhoneItem::new, true),
+    PHONE_GREEN(EyePhoneItem::new, true),
+    PHONE_LIGHT_BLUE(EyePhoneItem::new, true),
+    PHONE_LIGHT_GRAY(EyePhoneItem::new, true),
+    PHONE_LIME(EyePhoneItem::new, true),
+    PHONE_MAGENTA(EyePhoneItem::new, true),
+    PHONE_ORANGE(EyePhoneItem::new, true),
+    PHONE_PINK(EyePhoneItem::new, true),
+    PHONE_PURPLE(EyePhoneItem::new, true),
+    PHONE_RED(EyePhoneItem::new, true),
+    PHONE_WHITE(EyePhoneItem::new, true),
+    PHONE_YELLOW(EyePhoneItem::new, true);
 
     public final String path;
+    public final boolean isPhone;
     private volatile Item item = null;
     private final Function<Item.Settings, Item> itemSupplier;
     private static volatile ItemGroup EYE_PHONE_GROUP = null;
     ItemRegistry(Function<Item.Settings, Item> itemSupplier) {
-        path = name().toLowerCase();
+        this(itemSupplier, false);
+    }
+
+    ItemRegistry(Function<Item.Settings, Item> itemSupplier, boolean isPhone) {
+        this.path = name().toLowerCase();
         this.itemSupplier = itemSupplier;
+        this.isPhone = isPhone;
     }
 
     public static void registerItems(String namespace) {
@@ -78,6 +84,8 @@ public enum ItemRegistry {
         for (ItemRegistry value : values()) {
             value.item = value.itemSupplier.apply(new Item.Settings().group(EYE_PHONE_GROUP));
             Registry.register(Registry.ITEM, new Identifier(namespace, value.path), value.item);
+            if (!value.isPhone) continue;
+            ((EyePhoneItem) value.item).setItemRegistry(value);
         }
     }
 

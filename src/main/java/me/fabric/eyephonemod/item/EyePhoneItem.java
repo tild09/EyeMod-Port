@@ -1,7 +1,6 @@
 package me.fabric.eyephonemod.item;
 
 import me.fabric.eyephonemod.gui.handler.ItemStackScreenHandlerFactory;
-import me.fabric.eyephonemod.gui.handler.dummy.DummyServerScreenHandler;
 import me.fabric.eyephonemod.gui.handler.eyephone.EyePhoneServerScreenHandler;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
@@ -30,6 +29,7 @@ public class EyePhoneItem extends ScreenHandlingItem {
             return new EyePhoneServerScreenHandler(syncId, player, itemStack);
         }
     };
+    private ItemRegistry itemRegistry;
 
     public EyePhoneItem(Settings settings) {
         super(settings);
@@ -51,5 +51,13 @@ public class EyePhoneItem extends ScreenHandlingItem {
         final OptionalInt optionalInt = openItemStackScreenHandler(SCREEN_HANDLER_FACTORY, user, itemStack);
         if (!optionalInt.isPresent()) LOGGER.error("Cannot open handled screen for player {}!", user.getEntityName());
         return true;
+    }
+
+    public void setItemRegistry(ItemRegistry itemRegistry) {
+        this.itemRegistry = itemRegistry;
+    }
+
+    public ItemRegistry getItemRegistry() {
+        return itemRegistry;
     }
 }
