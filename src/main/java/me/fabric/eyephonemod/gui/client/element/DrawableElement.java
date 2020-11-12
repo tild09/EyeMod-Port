@@ -63,11 +63,37 @@ public interface DrawableElement extends Element, Drawable {
         RenderSystem.color4f(255.0f, 255.0f, 255.0f, 255.0f);
     }
 
+    int getParentX();
+
+    int getParentY();
+
+    int getX();
+
+    int getY();
+
+    int getWidth();
+
+    int getHeight();
+
     void setParentX(int parentX);
 
     void setParentY(int parentY);
 
-    boolean isFocused();
+    default boolean isFocused() {
+        return false;
+    }
 
-    void setFocused(boolean focused);
+    default void setFocused(boolean focused) {
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    default boolean isMouseOver(double mouseX, double mouseY) {
+        mouseX -= getParentX() + getX();
+        mouseY -= getParentY() + getY();
+        return mouseX > 0 && getWidth() > mouseX &&
+                mouseY > 0 && getHeight() > mouseY;
+
+    }
 }

@@ -4,11 +4,11 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.math.MatrixStack;
 
 public class Label implements DrawableElement {
-    private int parentX = 0;
-    private int parentY = 0;
     private final String label;
     private final int x;
     private final int y;
+    private int parentX = 0;
+    private int parentY = 0;
 
     private int color = 0xFFFFFFFF;
 
@@ -44,5 +44,35 @@ public class Label implements DrawableElement {
 
     public void setColor(int color) {
         this.color = color;
+    }
+
+    @Override
+    public int getX() {
+        return x;
+    }
+
+    @Override
+    public int getY() {
+        return y;
+    }
+
+    @Override
+    public int getWidth() {
+        return MinecraftClient.getInstance().textRenderer.getWidth(label);
+    }
+
+    @Override
+    public int getHeight() {
+        return MinecraftClient.getInstance().textRenderer.fontHeight;
+    }
+
+    @Override
+    public int getParentX() {
+        return parentX;
+    }
+
+    @Override
+    public int getParentY() {
+        return parentY;
     }
 }

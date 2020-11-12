@@ -4,6 +4,7 @@ import me.fabric.eyephonemod.EyePhoneMod;
 import me.fabric.eyephonemod.gui.client.element.BottomRightAnchoredPanel;
 import me.fabric.eyephonemod.gui.client.element.Label;
 import me.fabric.eyephonemod.gui.client.element.TextField;
+import me.fabric.eyephonemod.gui.client.element.TexturedButton;
 import me.fabric.eyephonemod.gui.handler.ClientScreenHandler;
 import me.fabric.eyephonemod.gui.handler.eyephone.EyePhoneClientScreenHandler;
 import net.minecraft.client.MinecraftClient;
@@ -12,6 +13,8 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.text.WordUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -28,6 +31,7 @@ public class EyePhoneScreen<T extends ClientScreenHandler> extends BaseScreen<T>
     );
     static final int BG_WIDTH = 88 * 2;
     static final int BG_HEIGHT = 118 * 2;
+    static final Identifier ID = new Identifier(EyePhoneMod.NAMESPACE, "textures/gui/eye_apps.png");
 
     final EyePhoneClientScreenHandler handler;
     final AnimationKeyframePlayer<Integer> onShowAnimationPlayer = new AnimationKeyframePlayer<>(
@@ -55,12 +59,16 @@ public class EyePhoneScreen<T extends ClientScreenHandler> extends BaseScreen<T>
     private void setWidgets() {
         final BottomRightAnchoredPanel panel = new BottomRightAnchoredPanel(backgroundWidth, backgroundHeight, 20, 20);
         final Label phoneNameLabel = new Label("Phone Name:", 20, 32);
-        final TextField phoneNameTextField = new TextField(80, 15, handler::updatePhoneName, 20, 49);
+        final TextField phoneNameTextField = new TextField(80, handler::updatePhoneName, 20, 49);
+        final TexturedButton button = new TexturedButton(Apps.WIFI.texture, Apps.BTN_SIZE, Apps.BTN_SIZE, 20, 20);
+
+        panel.addChild(phoneNameLabel);
+        panel.addChild(phoneNameTextField);
+        panel.addChild(button);
+
         handler.setPhoneNameUpdateListener(phoneNameTextField::write);
         handler.setPhoneBgUpdateListener(this::updateBackgroundIdentifier);
         handler.setPhoneTypeUpdateListener(s -> System.out.println("Phone type is " + s));
-        panel.addChild(phoneNameLabel);
-        panel.addChild(phoneNameTextField);
         parents.add(panel);
     }
 
@@ -150,5 +158,24 @@ public class EyePhoneScreen<T extends ClientScreenHandler> extends BaseScreen<T>
 
     private void updateYPlayer() {
         currentY = onShowAnimationPlayer.next();
+    }
+
+    public enum Apps {
+        STORE, SETTINGS, INFO, ROUND, EMAIL, CHAT, MUSIC, NOTES, TNT, PERSON,
+        AIR, HEART, WEATHER, WORK, HEALTH, EGG, PET, WRITE, CRYSTAL, CONTACT,
+        WIFI;
+
+        public static final int BTN_SIZE = 12;
+        private static final int TEXTURE_SIZE = 128;
+        private static final int COLS = 10;
+
+        public final TextureSetting texture;
+        public final String name = WordUtils.capitalize(StringUtils.join(name().toLowerCase().split("_"), ' '));
+
+        Apps() {
+            final int offsetX = Math.floorMod(ordinal(), COLS) * BTN_SIZE;
+            final int offsetY = Math.floorDiv(ordinal(), COLS) * BTN_SIZE;
+            texture = new TextureSetting(ID, TEXTURE_SIZE, TEXTURE_SIZE, offsetX, offsetY);
+        }
     }
 }

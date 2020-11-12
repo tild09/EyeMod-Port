@@ -31,9 +31,9 @@ public class TextField implements DrawableElement {
     private final TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
     private final Keyboard keyboard = MinecraftClient.getInstance().keyboard;
 
+    private final Consumer<String> textListener;
     private final int width;
     private final int height;
-    private final Consumer<String> textListener;
     private final int x;
     private final int y;
     private int parentX = 0;
@@ -43,7 +43,7 @@ public class TextField implements DrawableElement {
     private int focusedBgColor = 0xFF000000;
     private int outFocusedBgColor = 0xFF222222;
 
-    public TextField(int width, int height, Consumer<String> textListener, int x, int y) {
+    public TextField(int width, Consumer<String> textListener, int x, int y) {
         this.width = width;
         this.height = 15;
         this.textListener = textListener;
@@ -437,5 +437,35 @@ public class TextField implements DrawableElement {
         mouseY -= parentY + y;
         return mouseX > 0 && width > mouseX &&
                 mouseY > 0 && height > mouseY;
+    }
+
+    @Override
+    public int getX() {
+        return x;
+    }
+
+    @Override
+    public int getY() {
+        return y;
+    }
+
+    @Override
+    public int getParentX() {
+        return parentX;
+    }
+
+    @Override
+    public int getParentY() {
+        return parentY;
+    }
+
+    @Override
+    public int getWidth() {
+        return width;
+    }
+
+    @Override
+    public int getHeight() {
+        return height;
     }
 }
