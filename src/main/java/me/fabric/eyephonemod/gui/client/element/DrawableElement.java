@@ -15,6 +15,7 @@ public interface DrawableElement extends Element, Drawable {
     default void mouseOver(double mouseX, double mouseY) {
     }
 
+    @SuppressWarnings("deprecation")
     static void coloredRect(int left, int top, int width, int height, int color) {
         int fixedWidth = width;
         int fixedHeight = height;
@@ -26,6 +27,7 @@ public interface DrawableElement extends Element, Drawable {
         final float b = (color & 0xFF) / 255.0f;
         final Tessellator tessellator = Tessellator.getInstance();
         final BufferBuilder buffer = tessellator.getBuffer();
+        RenderSystem.color4f(255.0f, 255.0f, 255.0f, 255.0f);
         RenderSystem.enableBlend();
         RenderSystem.disableTexture();
         RenderSystem.blendFuncSeparate(

@@ -165,8 +165,8 @@ public class EyePhoneScreen<T extends ClientScreenHandler> extends BaseScreen<T>
         AIR, HEART, WEATHER, WORK, HEALTH, EGG, PET, WRITE, CRYSTAL, CONTACT,
         WIFI;
 
-        public static final int BTN_SIZE = 12;
-        private static final int TEXTURE_SIZE = 128;
+        public static final int BTN_SIZE = 24;
+        private static final int TEXTURE_SIZE = 256;
         private static final int COLS = 10;
 
         public final TextureSetting texture;

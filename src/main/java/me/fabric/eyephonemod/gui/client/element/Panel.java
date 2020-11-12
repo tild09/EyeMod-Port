@@ -21,6 +21,7 @@ public abstract class Panel implements ParentElement, Drawable {
     int drawY = 0;
     int parentWidth;
     int parentHeight;
+    private boolean isVisible = true;
 
     public Panel(int width, int height) {
         this.height = height;
@@ -66,10 +67,12 @@ public abstract class Panel implements ParentElement, Drawable {
 
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+        if (isInvisible()) return;
         children.forEach(e -> e.render(matrices, mouseX, mouseY, delta));
     }
 
     public void queryMouseOver(double mouseX, double mouseY) {
+        if (isInvisible()) return;
         children.forEach(c -> {
             if (c.isMouseOver(mouseX, mouseY)) c.mouseOver(mouseX, mouseY);
         });
@@ -77,6 +80,7 @@ public abstract class Panel implements ParentElement, Drawable {
 
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        if (isInvisible()) return false;
         return children.stream().anyMatch(c -> {
             final boolean mouseOver = c.isMouseOver(mouseX, mouseY);
             if (mouseOver) c.mouseReleased(mouseX, mouseY, button);
@@ -87,21 +91,33 @@ public abstract class Panel implements ParentElement, Drawable {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (isInvisible()) return false;
         return children.stream().anyMatch(c -> c.mouseClicked(mouseX, mouseY, button));
     }
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (isInvisible()) return false;
         return children.stream().anyMatch(c -> c.keyPressed(keyCode, scanCode, modifiers));
     }
 
     @Override
     public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
+        if (isInvisible()) return false;
         return children.stream().anyMatch(c -> c.keyReleased(keyCode, scanCode, modifiers));
     }
 
     @Override
     public boolean charTyped(char chr, int keyCode) {
+        if (isInvisible()) return false;
         return children.stream().anyMatch(c -> c.charTyped(chr, keyCode));
+    }
+
+    public boolean isInvisible() {
+        return !isVisible;
+    }
+
+    public void setVisible(boolean visible) {
+        isVisible = visible;
     }
 }

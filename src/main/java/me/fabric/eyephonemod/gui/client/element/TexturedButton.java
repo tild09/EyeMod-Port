@@ -3,7 +3,9 @@ package me.fabric.eyephonemod.gui.client.element;
 import me.fabric.eyephonemod.gui.client.TextureSetting;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.sound.SoundEvents;
 
 public class TexturedButton implements DrawableElement {
     private final TextureSetting texture;
@@ -26,17 +28,11 @@ public class TexturedButton implements DrawableElement {
 
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        if (isMouseOver(mouseX, mouseY)) drawOutline();
-        final int drawX = x + parentX;
-        final int drawY = y + parentY;
+        final boolean mouseOver = isMouseOver(mouseX, mouseY);
+        final int drawX = x + parentX - (mouseOver ? 1 : 0);
+        final int drawY = y + parentY - (mouseOver ? 1 : 0);
         MinecraftClient.getInstance().getTextureManager().bindTexture(texture.textureId);
         DrawableHelper.drawTexture(matrices, drawX, drawY, texture.offsetX, texture.offsetY, width, height, texture.width, texture.height);
-    }
-
-    private void drawOutline() {
-        final int drawX = x + parentX - 1;
-        final int drawY = y + parentY - 1;
-        DrawableElement.coloredRect(drawX, drawY, width + 2, height + 2, 0xFFFFFF);
     }
 
     @Override
@@ -89,6 +85,7 @@ public class TexturedButton implements DrawableElement {
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
         if (!isMouseOver(mouseX, mouseY)) return false;
+        MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1f));
         onClickCallback.run();
         return true;
     }
