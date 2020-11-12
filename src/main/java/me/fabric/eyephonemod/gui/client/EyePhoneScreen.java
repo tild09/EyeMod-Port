@@ -2,11 +2,13 @@ package me.fabric.eyephonemod.gui.client;
 
 import me.fabric.eyephonemod.EyePhoneMod;
 import me.fabric.eyephonemod.gui.client.element.BottomRightAnchoredPanel;
+import me.fabric.eyephonemod.gui.client.element.Label;
 import me.fabric.eyephonemod.gui.client.element.TextField;
 import me.fabric.eyephonemod.gui.handler.ClientScreenHandler;
 import me.fabric.eyephonemod.gui.handler.eyephone.EyePhoneClientScreenHandler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.Text;
@@ -14,6 +16,7 @@ import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.opengl.GL11;
 
 import java.util.Optional;
 
@@ -52,10 +55,12 @@ public class EyePhoneScreen<T extends ClientScreenHandler> extends BaseScreen<T>
 
     private void setWidgets() {
         final BottomRightAnchoredPanel panel = new BottomRightAnchoredPanel(backgroundWidth, backgroundHeight, 20, 20);
-        final TextField phoneNameTextField = new TextField(50, 15, handler::updatePhoneName, 10, 50);
+        final Label phoneNameLabel = new Label("Phone Name:", 20, 32);
+        final TextField phoneNameTextField = new TextField(80, 15, handler::updatePhoneName, 20, 49);
         handler.setPhoneNameUpdateListener(phoneNameTextField::write);
         handler.setPhoneBgUpdateListener(this::updateBackgroundIdentifier);
         handler.setPhoneTypeUpdateListener(s -> System.out.println("Phone type is " + s));
+        panel.addChild(phoneNameLabel);
         panel.addChild(phoneNameTextField);
         parents.add(panel);
     }
@@ -115,7 +120,18 @@ public class EyePhoneScreen<T extends ClientScreenHandler> extends BaseScreen<T>
                 customBackground.height,
                 customBackground.width
         );
+    }
 
+    @Override
+    public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+        if (customBackground == null) return;
+        updateYPlayer();
+        parents.forEach(p -> p.setBottomPadding(PADDING - 8 + currentY));
+        super.render(matrices, mouseX, mouseY, delta);
+
+        final MinecraftClient mc = MinecraftClient.getInstance();
+        GL11.glEnable(GL11.GL_SCISSOR_TEST);
+        GL11.glScissor(0, 0, mc.getWindow().getFramebufferWidth(), mc.getWindow().getFramebufferHeight());
         final TextureSetting texture = BG_TEXTURE;
         MinecraftClient.getInstance().getTextureManager().bindTexture(texture.textureId);
         drawTexture(
@@ -130,14 +146,7 @@ public class EyePhoneScreen<T extends ClientScreenHandler> extends BaseScreen<T>
                 texture.height,
                 texture.width
         );
-    }
-
-    @Override
-    public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        if (customBackground == null) return;
-        updateYPlayer();
-        parents.forEach(p -> p.setBottomPadding(PADDING - 8 + currentY));
-        super.render(matrices, mouseX, mouseY, delta);
+        GL11.glDisable(GL11.GL_SCISSOR_TEST);
     }
 
     private void updateYPlayer() {

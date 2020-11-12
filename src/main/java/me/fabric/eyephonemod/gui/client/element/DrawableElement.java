@@ -60,11 +60,8 @@ public interface DrawableElement extends Element, Drawable {
         tessellator.draw();
         RenderSystem.disableColorLogicOp();
         RenderSystem.enableTexture();
+        RenderSystem.color4f(255.0f, 255.0f, 255.0f, 255.0f);
     }
-
-    int getParentX();
-
-    int getParentY();
 
     void setParentX(int parentX);
 

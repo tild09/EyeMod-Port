@@ -36,11 +36,10 @@ public class TextField implements DrawableElement {
     private final Consumer<String> textListener;
     private final int x;
     private final int y;
-
-    private int textColor = 0xFFFFFFFF;
     private int parentX = 0;
     private int parentY = 0;
 
+    private int textColor = 0xFFFFFFFF;
     private int focusedBgColor = 0xFF000000;
     private int outFocusedBgColor = 0xFF222222;
 
@@ -200,18 +199,8 @@ public class TextField implements DrawableElement {
     }
 
     @Override
-    public int getParentX() {
-        return parentX;
-    }
-
-    @Override
     public void setParentX(int parentX) {
         this.parentX = parentX;
-    }
-
-    @Override
-    public int getParentY() {
-        return parentY;
     }
 
     @Override

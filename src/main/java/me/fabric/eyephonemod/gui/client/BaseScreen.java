@@ -63,7 +63,6 @@ public abstract class BaseScreen<T extends ClientScreenHandler> extends HandledS
 
     abstract TextureSetting getTexture();
 
-    @SuppressWarnings("deprecation")
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         drawBackground(matrices, delta, mouseX, mouseY);
@@ -73,27 +72,5 @@ public abstract class BaseScreen<T extends ClientScreenHandler> extends HandledS
         GL11.glScissor(0, 0, mc.getWindow().getFramebufferWidth(), mc.getWindow().getFramebufferHeight());
         parents.forEach(p -> p.render(matrices, mouseX, mouseY, delta));
         GL11.glDisable(GL11.GL_SCISSOR_TEST);
-        DiffuseLighting.disable();
-        // Needed because super.render leaves dirty state
-        // draw cursor item stack
-
-        final ItemStack cursorStack = playerInventory.getCursorStack();
-        if (!cursorStack.isEmpty()) {
-            RenderSystem.translatef(0.0f, 0.0f, 32.0f);
-            setZOffset(200); // ? questionable
-            itemRenderer.zOffset = 200.0f;
-            itemRenderer.renderInGuiWithOverrides(cursorStack, mouseX - 9, mouseY - 9);
-            itemRenderer.renderGuiItemOverlay(
-                    textRenderer,
-                    cursorStack,
-                    mouseX - 9,
-                    mouseY - 9,
-                    cursorStack.getCount() > 1 ? String.format("%d", cursorStack.getCount()) : null
-            );
-            setZOffset(0); // ? questionable
-            itemRenderer.zOffset = 0.0f;
-        }
-        DiffuseLighting.enable();
-//        renderTooltip(matrices, mouseX, mouseY)
     }
 }
