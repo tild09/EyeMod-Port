@@ -30,6 +30,7 @@ public class EyePhoneClientScreenHandler extends ClientScreenHandler {
     @Override
     public void onPacket(PacketByteBuf packetByteBuf, int packetAction) {
         if (packetAction == EyePhonePacketAction.PHONE_ENTRIES_UPDATE.getActionOrdinal()) {
+            System.out.println("Got entries packet");
             phoneNameUpdateListener.accept(packetByteBuf.readString());
             phoneBgUpdateListener.accept(packetByteBuf.readString());
             phoneTypeUpdateListener.accept(packetByteBuf.readEnumConstant(ItemRegistry.class).path);

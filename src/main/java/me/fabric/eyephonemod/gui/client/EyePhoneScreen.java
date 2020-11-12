@@ -1,10 +1,8 @@
 package me.fabric.eyephonemod.gui.client;
 
+import com.google.common.collect.Lists;
 import me.fabric.eyephonemod.EyePhoneMod;
 import me.fabric.eyephonemod.gui.client.element.BottomRightAnchoredPanel;
-import me.fabric.eyephonemod.gui.client.element.Label;
-import me.fabric.eyephonemod.gui.client.element.TextField;
-import me.fabric.eyephonemod.gui.client.element.TexturedButton;
 import me.fabric.eyephonemod.gui.handler.ClientScreenHandler;
 import me.fabric.eyephonemod.gui.handler.eyephone.EyePhoneClientScreenHandler;
 import net.minecraft.client.MinecraftClient;
@@ -20,17 +18,16 @@ import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Optional;
+import static me.fabric.eyephonemod.gui.client.PanelMaker.*;
 
 public class EyePhoneScreen<T extends ClientScreenHandler> extends BaseScreen<T> {
-    static final int PADDING = 20;
-    static final int SIZE = 256;
     public static final TextureSetting BG_TEXTURE = new TextureSetting(
             new Identifier(EyePhoneMod.NAMESPACE, "textures/gui/eyepod_gui.png"),
             SIZE, SIZE
     );
-    static final int BG_WIDTH = 88 * 2;
-    static final int BG_HEIGHT = 118 * 2;
     static final Identifier ID = new Identifier(EyePhoneMod.NAMESPACE, "textures/gui/eye_apps.png");
 
     final EyePhoneClientScreenHandler handler;
@@ -41,6 +38,11 @@ public class EyePhoneScreen<T extends ClientScreenHandler> extends BaseScreen<T>
             AnimationKeyframePlayer.Ease.QUAD_OUT,
             AnimationKeyframePlayer.Type.PERSISTENT
     );
+
+    final BottomRightAnchoredPanel appsPanel = newPanel(true);
+    final BottomRightAnchoredPanel settingsPanel = newPanel(false);
+    final ArrayList<BottomRightAnchoredPanel> addPanels = Lists.newArrayList(appsPanel, settingsPanel);
+    final HashMap<Apps, BottomRightAnchoredPanel> appsMap = new HashMap<>();
 
     @Nullable
     private TextureSetting customBackground = null;
@@ -54,22 +56,15 @@ public class EyePhoneScreen<T extends ClientScreenHandler> extends BaseScreen<T>
         this.backgroundWidth = BG_WIDTH;
         this.backgroundHeight = BG_HEIGHT;
         setWidgets();
+        this.handler.setPhoneBgUpdateListener(this::updateBackgroundIdentifier);
     }
 
     private void setWidgets() {
-        final BottomRightAnchoredPanel panel = new BottomRightAnchoredPanel(backgroundWidth, backgroundHeight, 20, 20);
-        final Label phoneNameLabel = new Label("Phone Name:", 20, 32);
-        final TextField phoneNameTextField = new TextField(80, handler::updatePhoneName, 20, 49);
-        final TexturedButton button = new TexturedButton(Apps.WIFI.texture, Apps.BTN_SIZE, Apps.BTN_SIZE, 20, 20);
-
-        panel.addChild(phoneNameLabel);
-        panel.addChild(phoneNameTextField);
-        panel.addChild(button);
-
-        handler.setPhoneNameUpdateListener(phoneNameTextField::write);
-        handler.setPhoneBgUpdateListener(this::updateBackgroundIdentifier);
-        handler.setPhoneTypeUpdateListener(s -> System.out.println("Phone type is " + s));
-        parents.add(panel);
+        parents.add(appsPanel);
+        parents.add(settingsPanel);
+        configureSettingsPanel(this, settingsPanel);
+        configureAppsPanel(this, appsPanel, Lists.newArrayList(Apps.SETTINGS));
+        appsMap.put(Apps.SETTINGS, settingsPanel);
     }
 
     private void updateBackgroundIdentifier(String identifier) {
@@ -78,6 +73,15 @@ public class EyePhoneScreen<T extends ClientScreenHandler> extends BaseScreen<T>
                 new Identifier(split[0], split[1]),
                 SIZE, SIZE
         );
+    }
+
+    public void requestChangePanel(@Nullable Apps app) {
+        addPanels.forEach(p -> p.setVisible(false));
+        if (app == null) appsPanel.setVisible(true);
+        else {
+            final BottomRightAnchoredPanel requestPanel = appsMap.getOrDefault(app, null);
+            if (requestPanel != null) requestPanel.setVisible(true);
+        }
     }
 
     @Override
