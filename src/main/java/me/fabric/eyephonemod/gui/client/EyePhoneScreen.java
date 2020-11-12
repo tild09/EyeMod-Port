@@ -8,7 +8,6 @@ import me.fabric.eyephonemod.gui.handler.ClientScreenHandler;
 import me.fabric.eyephonemod.gui.handler.eyephone.EyePhoneClientScreenHandler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.Text;
@@ -27,13 +26,13 @@ public class EyePhoneScreen<T extends ClientScreenHandler> extends BaseScreen<T>
             new Identifier(EyePhoneMod.NAMESPACE, "textures/gui/eyepod_gui.png"),
             SIZE, SIZE
     );
-    static final int BG_WIDTH = 88*2;
-    static final int BG_HEIGHT = 118*2;
+    static final int BG_WIDTH = 88 * 2;
+    static final int BG_HEIGHT = 118 * 2;
 
     final EyePhoneClientScreenHandler handler;
     final AnimationKeyframePlayer<Integer> onShowAnimationPlayer = new AnimationKeyframePlayer<>(
             0, 8,
-            (d, f, t) -> (int)((t - f) * d + f),
+            (d, f, t) -> (int) ((t - f) * d + f),
             20,
             AnimationKeyframePlayer.Ease.QUAD_OUT,
             AnimationKeyframePlayer.Type.PERSISTENT

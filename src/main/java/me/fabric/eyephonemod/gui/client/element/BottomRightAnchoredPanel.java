@@ -1,12 +1,9 @@
 package me.fabric.eyephonemod.gui.client.element;
 
-public class BottomRightAnchoredPanel extends CenteredPanel {
-
+public class BottomRightAnchoredPanel extends Panel {
 
     private int rightPadding;
     private int bottomPadding;
-    private int parentWidth;
-    private int parentHeight;
 
     public BottomRightAnchoredPanel(int width, int height, int rightPadding, int bottomPadding) {
         super(width, height);
@@ -15,13 +12,7 @@ public class BottomRightAnchoredPanel extends CenteredPanel {
     }
 
     @Override
-    public void init(int parentWidth, int parentHeight) {
-        this.parentWidth = parentWidth;
-        this.parentHeight = parentHeight;
-        configureChildPositions();
-    }
-
-    private void configureChildPositions() {
+    public void configureChildPositions() {
         drawX = parentWidth - width - rightPadding;
         drawY = parentHeight - height - bottomPadding;
         children.forEach(c -> {

@@ -2,15 +2,11 @@ package me.fabric.eyephonemod.gui.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.fabric.eyephonemod.gui.client.element.BottomRightAnchoredPanel;
-import me.fabric.eyephonemod.gui.client.element.CenteredPanel;
-import me.fabric.eyephonemod.gui.client.element.DrawableElement;
 import me.fabric.eyephonemod.gui.handler.ClientScreenHandler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.opengl.GL11;

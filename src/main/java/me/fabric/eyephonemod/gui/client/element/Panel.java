@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CenteredPanel implements ParentElement, Drawable {
+public abstract class Panel implements ParentElement, Drawable {
 
     final ArrayList<DrawableElement> children = new ArrayList<>();
     boolean dragging = false;
@@ -19,20 +19,21 @@ public class CenteredPanel implements ParentElement, Drawable {
 
     int drawX = 0;
     int drawY = 0;
+    int parentWidth;
+    int parentHeight;
 
-    public CenteredPanel(int width, int height) {
+    public Panel(int width, int height) {
         this.height = height;
         this.width = width;
     }
 
     public void init(int parentWidth, int parentHeight) {
-        drawX = (parentWidth - width) / 2;
-        drawY = (parentHeight - height) / 2;
-        children.forEach(c -> {
-            c.setParentX(drawX);
-            c.setParentY(drawY);
-        });
+        this.parentWidth = parentWidth;
+        this.parentHeight = parentHeight;
+        configureChildPositions();
     }
+
+    public abstract void configureChildPositions();
 
     @Override
     public List<? extends Element> children() {
