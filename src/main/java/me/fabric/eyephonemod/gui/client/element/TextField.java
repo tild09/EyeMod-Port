@@ -13,29 +13,25 @@ import java.util.function.Consumer;
 
 public class TextField implements DrawableElement {
 
-    private boolean focused = false;
-
-    private int cursor = 0;
-    private int visibleLower = 0;
-    private int visibleUpper = 0;
-    private boolean hasSelection = false;
-    private int selection = 0;
-
     private final int caretMaxTick = 15;
-    private int caretTick = caretMaxTick;
-    private int caretColor = 0xFFFFFFFF;
-    private boolean drawCaret = false;
-
-    private String text = "";
-    private int maxLength = 10;
     private final TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
     private final Keyboard keyboard = MinecraftClient.getInstance().keyboard;
-
     private final Consumer<String> textListener;
     private final int width;
     private final int height;
     private final int x;
     private final int y;
+    private boolean focused = false;
+    private int cursor = 0;
+    private int visibleLower = 0;
+    private int visibleUpper = 0;
+    private boolean hasSelection = false;
+    private int selection = 0;
+    private int caretTick = caretMaxTick;
+    private int caretColor = 0xFFFFFFFF;
+    private boolean drawCaret = false;
+    private String text = "";
+    private int maxLength = 10;
     private int parentX = 0;
     private int parentY = 0;
 
@@ -196,16 +192,6 @@ public class TextField implements DrawableElement {
             visibleUpper = cursor;
             visibleLower = cursor - textRenderer.trimToWidth(text, width, true).length();
         }
-    }
-
-    @Override
-    public void setParentX(int parentX) {
-        this.parentX = parentX;
-    }
-
-    @Override
-    public void setParentY(int parentY) {
-        this.parentY = parentY;
     }
 
     @Override
@@ -460,8 +446,18 @@ public class TextField implements DrawableElement {
     }
 
     @Override
+    public void setParentX(int parentX) {
+        this.parentX = parentX;
+    }
+
+    @Override
     public int getParentY() {
         return parentY;
+    }
+
+    @Override
+    public void setParentY(int parentY) {
+        this.parentY = parentY;
     }
 
     @Override

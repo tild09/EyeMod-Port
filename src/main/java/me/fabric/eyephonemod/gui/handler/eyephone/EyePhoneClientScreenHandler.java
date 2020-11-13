@@ -12,6 +12,7 @@ import java.util.function.Consumer;
 
 public class EyePhoneClientScreenHandler extends ClientScreenHandler {
 
+    private static final Logger LOGGER = LogManager.getLogger();
     private Consumer<String> phoneNameUpdateListener = EyePhoneClientScreenHandler::dummy;
     private Consumer<String> phoneBgUpdateListener = EyePhoneClientScreenHandler::dummy;
     private Consumer<String> phoneTypeUpdateListener = EyePhoneClientScreenHandler::dummy;
@@ -20,10 +21,14 @@ public class EyePhoneClientScreenHandler extends ClientScreenHandler {
     private Runnable onPasswordFailure = EyePhoneClientScreenHandler::dummy;
     private String contextPassword = "";
 
-    private static final Logger LOGGER = LogManager.getLogger();
-
     public EyePhoneClientScreenHandler(int syncId) {
         super(ScreenRegistry.EYEPHONE_GUI.getScreenHandlerType(), syncId);
+    }
+
+    private static void dummy(String s) {
+    }
+
+    private static void dummy() {
     }
 
     @Override
@@ -86,12 +91,6 @@ public class EyePhoneClientScreenHandler extends ClientScreenHandler {
 
     public void setOnPasswordFailure(Runnable onPasswordFailure) {
         this.onPasswordFailure = onPasswordFailure;
-    }
-
-    private static void dummy(String s) {
-    }
-
-    private static void dummy() {
     }
 
     public void updatePasswordToUnlock(String password) {

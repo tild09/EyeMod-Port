@@ -11,7 +11,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ItemStack.class)
 public class ItemStackMixin {
-    @Shadow private CompoundTag tag;
+    @Shadow
+    private CompoundTag tag;
 
     @Inject(method = "toTag", at = @At("HEAD"))
     private void onToTag(CompoundTag incomingTag, CallbackInfoReturnable<CompoundTag> cir) {

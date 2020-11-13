@@ -18,22 +18,17 @@ public enum ScreenRegistry {
     DUMMY_GUI(DummyScreen::new, DummyClientScreenHandler::new, DummyPacketAction::values),
     EYEPHONE_GUI(EyePhoneScreen::new, EyePhoneClientScreenHandler::new, EyePhonePacketAction::values);
 
-    private ScreenHandlerType<? extends ClientScreenHandler> screenHandlerType = null;
+    public final String path;
     private final ScreenFactory screenFactory;
     private final ClientScreenHandlerFactory<? extends ClientScreenHandler> clientScreenHandlerFactory;
     private final PacketActionsProvider packetActionsProvider;
-    public final String path;
+    private ScreenHandlerType<? extends ClientScreenHandler> screenHandlerType = null;
 
     ScreenRegistry(ScreenFactory screenFactory, ClientScreenHandlerFactory<? extends ClientScreenHandler> clientScreenHandlerFactory, PacketActionsProvider packetActionsProvider) {
         this.screenFactory = screenFactory;
         this.clientScreenHandlerFactory = clientScreenHandlerFactory;
         this.path = this.name().toLowerCase();
         this.packetActionsProvider = packetActionsProvider;
-    }
-
-    public ScreenHandlerType<? extends ClientScreenHandler> getScreenHandlerType() {
-        if (screenHandlerType == null) throw new NullPointerException("Register screen handlers first!");
-        return screenHandlerType;
     }
 
     public static void registerScreenHandlers(String namespace) {
@@ -48,5 +43,10 @@ public enum ScreenRegistry {
         for (ScreenRegistry value : values()) {
             net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry.register(value.getScreenHandlerType(), value.screenFactory::createNewScreen);
         }
+    }
+
+    public ScreenHandlerType<? extends ClientScreenHandler> getScreenHandlerType() {
+        if (screenHandlerType == null) throw new NullPointerException("Register screen handlers first!");
+        return screenHandlerType;
     }
 }

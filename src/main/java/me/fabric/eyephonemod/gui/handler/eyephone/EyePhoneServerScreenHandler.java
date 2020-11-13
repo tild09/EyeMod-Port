@@ -8,7 +8,6 @@ import me.fabric.eyephonemod.item.EyePhoneItem;
 import me.fabric.eyephonemod.item.ScreenHandlingItem;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.apache.logging.log4j.LogManager;

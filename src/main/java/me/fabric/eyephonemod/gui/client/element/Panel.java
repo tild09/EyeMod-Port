@@ -12,11 +12,10 @@ import java.util.List;
 public abstract class Panel implements ParentElement, Drawable {
 
     final ArrayList<DrawableElement> children = new ArrayList<>();
-    boolean dragging = false;
-    @Nullable Element focused;
     final int height;
     final int width;
-
+    boolean dragging = false;
+    @Nullable Element focused;
     int drawX = 0;
     int drawY = 0;
     int parentWidth;

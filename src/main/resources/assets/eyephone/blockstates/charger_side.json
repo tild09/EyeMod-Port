@@ -1,5 +1,7 @@
 {
   "variants": {
-    "": { "model": "eyephone:block/charger_side" }
+    "": {
+      "model": "eyephone:block/charger_side"
+    }
   }
 }

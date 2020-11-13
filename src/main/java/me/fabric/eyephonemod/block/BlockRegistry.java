@@ -22,15 +22,15 @@ public enum BlockRegistry {
         block = blockSupplier.get();
     }
 
-    public BlockItem getItem() {
-        return item;
-    }
-
     public static void registerBlocks(String namespace) {
         for (BlockRegistry value : values()) {
             value.item = new BlockItem(value.block, new Item.Settings().group(ItemRegistry.getItemGroup()));
             Registry.register(Registry.BLOCK, new Identifier(namespace, value.path), value.block);
             Registry.register(Registry.ITEM, new Identifier(namespace, value.path), value.item);
         }
+    }
+
+    public BlockItem getItem() {
+        return item;
     }
 }

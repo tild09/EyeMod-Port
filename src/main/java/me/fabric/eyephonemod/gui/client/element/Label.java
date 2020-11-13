@@ -20,16 +20,6 @@ public class Label implements DrawableElement {
     }
 
     @Override
-    public void setParentX(int parentX) {
-        this.parentX = parentX;
-    }
-
-    @Override
-    public void setParentY(int parentY) {
-        this.parentY = parentY;
-    }
-
-    @Override
     public boolean isFocused() {
         return false;
     }
@@ -74,8 +64,18 @@ public class Label implements DrawableElement {
     }
 
     @Override
+    public void setParentX(int parentX) {
+        this.parentX = parentX;
+    }
+
+    @Override
     public int getParentY() {
         return parentY;
+    }
+
+    @Override
+    public void setParentY(int parentY) {
+        this.parentY = parentY;
     }
 
     public void setVisible(boolean visible) {

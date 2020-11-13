@@ -5,11 +5,11 @@ import net.minecraft.data.client.model.BlockStateVariantMap.TriFunction;
 public class AnimationKeyframePlayer<T> {
 
     public final TriFunction<Double, T, T, T> interpolator;
-    private final T from;
-    private final T to;
     public final int numberOfFrames;
     public final Ease easeType;
     public final Type animationType;
+    private final T from;
+    private final T to;
     private final double[] frames;
 
     private boolean forward = true;

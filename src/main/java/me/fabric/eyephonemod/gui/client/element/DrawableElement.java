@@ -7,13 +7,9 @@ import net.minecraft.client.gui.Element;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.util.math.MatrixStack;
 import org.lwjgl.opengl.GL11;
 
 public interface DrawableElement extends Element, Drawable {
-
-    default void mouseOver(double mouseX, double mouseY) {
-    }
 
     @SuppressWarnings("deprecation")
     static void coloredRect(int left, int top, int width, int height, int color) {
@@ -65,9 +61,16 @@ public interface DrawableElement extends Element, Drawable {
         RenderSystem.color4f(255.0f, 255.0f, 255.0f, 255.0f);
     }
 
+    default void mouseOver(double mouseX, double mouseY) {
+    }
+
     int getParentX();
 
+    void setParentX(int parentX);
+
     int getParentY();
+
+    void setParentY(int parentY);
 
     int getX();
 
@@ -77,10 +80,6 @@ public interface DrawableElement extends Element, Drawable {
 
     int getHeight();
 
-    void setParentX(int parentX);
-
-    void setParentY(int parentY);
-
     default boolean isFocused() {
         return false;
     }
@@ -89,7 +88,9 @@ public interface DrawableElement extends Element, Drawable {
     }
 
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     default boolean isMouseOver(double mouseX, double mouseY) {
         mouseX -= getParentX() + getX();

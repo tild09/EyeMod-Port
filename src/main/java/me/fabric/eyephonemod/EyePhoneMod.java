@@ -9,6 +9,7 @@ import net.fabricmc.api.ModInitializer;
 
 public class EyePhoneMod implements ModInitializer, ClientModInitializer {
     public static final String NAMESPACE = "eyephone";
+
     @Override
     public void onInitializeClient() {
         ScreenPacket.initClientScreen();

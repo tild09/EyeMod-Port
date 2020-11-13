@@ -23,6 +23,7 @@ import org.lwjgl.opengl.GL11;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
+
 import static me.fabric.eyephonemod.gui.client.util.PanelMaker.*;
 
 public class EyePhoneScreen<T extends ClientScreenHandler> extends BaseScreen<T> {

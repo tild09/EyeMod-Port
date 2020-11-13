@@ -53,8 +53,8 @@ public abstract class ScreenHandlingItem extends Item {
                 player.closeHandledScreen();
             }
 
-            ((ServerPlayerEntityAccessor)player).eyephone_incrementScreenHandlerSyncId();
-            ScreenHandler screenHandler = factory.createMenu(((ServerPlayerEntityAccessor)player).eyephone_screenHandlerSyncId(), player, itemStack);
+            ((ServerPlayerEntityAccessor) player).eyephone_incrementScreenHandlerSyncId();
+            ScreenHandler screenHandler = factory.createMenu(((ServerPlayerEntityAccessor) player).eyephone_screenHandlerSyncId(), player, itemStack);
             if (screenHandler == null) {
                 if (player.isSpectator()) {
                     player.sendMessage((new TranslatableText("container.spectatorCantOpen")).formatted(Formatting.RED), true);
@@ -65,7 +65,7 @@ public abstract class ScreenHandlingItem extends Item {
                 player.networkHandler.sendPacket(new OpenScreenS2CPacket(screenHandler.syncId, screenHandler.getType(), factory.getDisplayName()));
                 screenHandler.addListener(player);
                 player.currentScreenHandler = screenHandler;
-                return OptionalInt.of(((ServerPlayerEntityAccessor)player).eyephone_screenHandlerSyncId());
+                return OptionalInt.of(((ServerPlayerEntityAccessor) player).eyephone_screenHandlerSyncId());
             }
         }
     }

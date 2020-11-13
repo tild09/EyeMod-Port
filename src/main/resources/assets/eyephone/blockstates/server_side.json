@@ -1,5 +1,7 @@
 {
   "variants": {
-    "": { "model": "eyephone:block/server_side" }
+    "": {
+      "model": "eyephone:block/server_side"
+    }
   }
 }

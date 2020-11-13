@@ -53,11 +53,11 @@ public class EyePhoneItem extends ScreenHandlingItem {
         return true;
     }
 
-    public void setItemRegistry(ItemRegistry itemRegistry) {
-        this.itemRegistry = itemRegistry;
-    }
-
     public ItemRegistry getItemRegistry() {
         return itemRegistry;
+    }
+
+    public void setItemRegistry(ItemRegistry itemRegistry) {
+        this.itemRegistry = itemRegistry;
     }
 }

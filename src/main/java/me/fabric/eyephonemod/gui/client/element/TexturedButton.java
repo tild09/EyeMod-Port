@@ -36,16 +36,6 @@ public class TexturedButton implements DrawableElement {
     }
 
     @Override
-    public void setParentX(int parentX) {
-        this.parentX = parentX;
-    }
-
-    @Override
-    public void setParentY(int parentY) {
-        this.parentY = parentY;
-    }
-
-    @Override
     public int getWidth() {
         return width;
     }
@@ -71,8 +61,18 @@ public class TexturedButton implements DrawableElement {
     }
 
     @Override
+    public void setParentX(int parentX) {
+        this.parentX = parentX;
+    }
+
+    @Override
     public int getParentY() {
         return parentY;
+    }
+
+    @Override
+    public void setParentY(int parentY) {
+        this.parentY = parentY;
     }
 
     public void setOnClickCallback(Runnable onClickCallback) {

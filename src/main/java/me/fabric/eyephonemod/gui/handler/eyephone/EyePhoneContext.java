@@ -7,11 +7,11 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
 
 public class EyePhoneContext {
+    public static final String PHONE_INFO = "phoneInfo";
+    private static final EyePhoneContext DEF_CONTEXT = new EyePhoneContext("EyePhone", EyePhoneMod.NAMESPACE + ":textures/background/default.png", "");
     public String name;
     public String backgroundIdentifier;
     public String password;
-    private static final EyePhoneContext DEF_CONTEXT = new EyePhoneContext("EyePhone", EyePhoneMod.NAMESPACE + ":textures/background/default.png", "");
-    public static final String PHONE_INFO = "phoneInfo";
 
     private EyePhoneContext(String name, String backgroundIdentifier, String password) {
         this.name = name;
@@ -43,6 +43,10 @@ public class EyePhoneContext {
             value.putInTag(phoneInfo, this);
         }
         phone.putSubTag(PHONE_INFO, phoneInfo);
+    }
+
+    public void updateTag(Attr key, String value) {
+        key.setToContext(this, value);
     }
 
     public enum Attr {
@@ -83,9 +87,5 @@ public class EyePhoneContext {
 
         public abstract void putInTag(CompoundTag tag, EyePhoneContext context);
 
-    }
-
-    public void updateTag(Attr key, String value) {
-        key.setToContext(this, value);
     }
 }

@@ -32,14 +32,14 @@ public class LabelledButton extends ButtonWidget implements DrawableElement {
     }
 
     @Override
-    public int getParentY() {
-        return parentY;
-    }
-
-    @Override
     public void setParentX(int parentX) {
         this.parentX = parentX;
         super.x = parentX + this.x;
+    }
+
+    @Override
+    public int getParentY() {
+        return parentY;
     }
 
     @Override

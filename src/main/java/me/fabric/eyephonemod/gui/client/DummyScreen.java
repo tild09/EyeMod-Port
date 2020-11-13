@@ -11,13 +11,15 @@ import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 public final class DummyScreen<T extends ClientScreenHandler> extends BaseScreen<T> implements ScreenHandlerProvider<T> {
-    public final DummyClientScreenHandler handler;
     public static final TextureSetting BG_TEXTURE = new TextureSetting(
             new Identifier(EyePhoneMod.NAMESPACE, "gui/dummy_bg.png")
     );
+    public final DummyClientScreenHandler handler;
+
     public DummyScreen(@NotNull T handler, @NotNull PlayerInventory inventory, @NotNull Text title) {
         super(handler, inventory, title);
-        if (!(handler instanceof DummyClientScreenHandler)) throw new RuntimeException("Handler must be a DummyClientScreenHandler type!");
+        if (!(handler instanceof DummyClientScreenHandler))
+            throw new RuntimeException("Handler must be a DummyClientScreenHandler type!");
         this.handler = (DummyClientScreenHandler) handler;
         this.backgroundWidth = 248;
         this.backgroundHeight = 166;

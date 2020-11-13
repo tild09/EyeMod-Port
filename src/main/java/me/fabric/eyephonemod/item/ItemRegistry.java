@@ -1,8 +1,6 @@
 package me.fabric.eyephonemod.item;
 
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
-import net.fabricmc.fabric.impl.item.group.CreativeGuiExtensions;
-import net.fabricmc.fabric.impl.item.group.FabricCreativeGuiComponents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -10,7 +8,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 public enum ItemRegistry {
     // deprecated
@@ -63,11 +60,12 @@ public enum ItemRegistry {
     PHONE_WHITE(EyePhoneItem::new, true),
     PHONE_YELLOW(EyePhoneItem::new, true);
 
+    private static volatile ItemGroup EYE_PHONE_GROUP = null;
     public final String path;
     public final boolean isPhone;
-    private volatile Item item = null;
     private final Function<Item.Settings, Item> itemSupplier;
-    private static volatile ItemGroup EYE_PHONE_GROUP = null;
+    private volatile Item item = null;
+
     ItemRegistry(Function<Item.Settings, Item> itemSupplier) {
         this(itemSupplier, false);
     }
@@ -90,7 +88,8 @@ public enum ItemRegistry {
     }
 
     public static ItemGroup getItemGroup() {
-        if (EYE_PHONE_GROUP == null) throw new NullPointerException("Register items first! The item group is only available after the items are registered.");
+        if (EYE_PHONE_GROUP == null)
+            throw new NullPointerException("Register items first! The item group is only available after the items are registered.");
         return EYE_PHONE_GROUP;
     }
 

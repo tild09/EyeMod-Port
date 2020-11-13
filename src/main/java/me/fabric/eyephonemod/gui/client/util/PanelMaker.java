@@ -3,7 +3,6 @@ package me.fabric.eyephonemod.gui.client.util;
 import me.fabric.eyephonemod.gui.client.EyePhoneScreen;
 import me.fabric.eyephonemod.gui.client.EyePhoneScreen.Apps;
 import me.fabric.eyephonemod.gui.client.element.*;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.LiteralText;
 
