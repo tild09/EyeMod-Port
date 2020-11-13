@@ -41,9 +41,10 @@ public class EyePhoneScreen<T extends ClientScreenHandler> extends BaseScreen<T>
             AnimationKeyframePlayer.Type.PERSISTENT
     );
 
+    final BottomRightAnchoredPanel passwordPanel = newPanel(false);
     final BottomRightAnchoredPanel appsPanel = newPanel(true);
     final BottomRightAnchoredPanel settingsPanel = newPanel(false);
-    final ArrayList<BottomRightAnchoredPanel> addPanels = Lists.newArrayList(appsPanel, settingsPanel);
+    final ArrayList<BottomRightAnchoredPanel> panels = Lists.newArrayList(appsPanel, settingsPanel);
     final HashMap<Apps, BottomRightAnchoredPanel> appsMap = new HashMap<>();
 
     @Nullable
@@ -64,8 +65,21 @@ public class EyePhoneScreen<T extends ClientScreenHandler> extends BaseScreen<T>
     private void setWidgets() {
         parents.add(appsPanel);
         parents.add(settingsPanel);
+        parents.add(passwordPanel);
         configureSettingsPanel(this, settingsPanel);
         configureAppsPanel(this, appsPanel, Lists.newArrayList(Apps.SETTINGS));
+        configurePasswordPanel(this, passwordPanel);
+        handler.appendPhonePasswordUpdateListener(s -> {
+            if (s.length() > 0) {
+                panels.forEach(p -> p.setVisible(false));
+                passwordPanel.setVisible(true);
+            }
+        });
+
+        handler.setOnPasswordSuccess(() -> {
+            passwordPanel.setVisible(false);
+            requestChangePanel(null);
+        });
         appsMap.put(Apps.SETTINGS, settingsPanel);
     }
 
@@ -78,7 +92,7 @@ public class EyePhoneScreen<T extends ClientScreenHandler> extends BaseScreen<T>
     }
 
     public void requestChangePanel(@Nullable Apps app) {
-        addPanels.forEach(p -> p.setVisible(false));
+        panels.forEach(p -> p.setVisible(false));
         if (app == null) appsPanel.setVisible(true);
         else {
             final BottomRightAnchoredPanel requestPanel = appsMap.getOrDefault(app, null);

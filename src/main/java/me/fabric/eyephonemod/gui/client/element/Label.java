@@ -11,6 +11,7 @@ public class Label implements DrawableElement {
     private int parentY = 0;
 
     private int color = 0xFFFFFFFF;
+    private boolean visible = true;
 
     public Label(String label, int x, int y) {
         this.label = label;
@@ -39,6 +40,7 @@ public class Label implements DrawableElement {
 
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+        if (!visible) return;
         MinecraftClient.getInstance().textRenderer.drawWithShadow(matrices, label, parentX + x, parentY + y, color);
     }
 
@@ -74,5 +76,9 @@ public class Label implements DrawableElement {
     @Override
     public int getParentY() {
         return parentY;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
     }
 }

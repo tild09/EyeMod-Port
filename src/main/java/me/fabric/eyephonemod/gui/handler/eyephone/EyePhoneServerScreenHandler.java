@@ -38,6 +38,14 @@ public class EyePhoneServerScreenHandler extends ServerScreenHandler {
             final EyePhoneContext.Attr key = packetByteBuf.readEnumConstant(EyePhoneContext.Attr.class);
             final String value = packetByteBuf.readString();
             eyePhoneContext.updateTag(key, value);
+        } else if (packetAction == EyePhonePacketAction.PHONE_VERIFY_PASSWORD.getActionOrdinal()) {
+            final String password = packetByteBuf.readString();
+            final PacketByteBuf response = ScreenPacket.newPacket(syncId,
+                    password.equals(eyePhoneContext.password) ?
+                            EyePhonePacketAction.PHONE_VERIFY_PASSWORD_SUCCESS.getActionOrdinal() :
+                            EyePhonePacketAction.PHONE_VERIFY_PASSWORD_FAIL.getActionOrdinal()
+            );
+            ScreenPacket.sendToClient(response, playerEntity);
         }
     }
 

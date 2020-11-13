@@ -16,6 +16,9 @@ public class EyePhoneClientScreenHandler extends ClientScreenHandler {
     private Consumer<String> phoneBgUpdateListener = EyePhoneClientScreenHandler::dummy;
     private Consumer<String> phoneTypeUpdateListener = EyePhoneClientScreenHandler::dummy;
     private Consumer<String> phonePasswordUpdateListener = EyePhoneClientScreenHandler::dummy;
+    private Runnable onPasswordSuccess = EyePhoneClientScreenHandler::dummy;
+    private Runnable onPasswordFailure = EyePhoneClientScreenHandler::dummy;
+    private String contextPassword = "";
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -30,6 +33,10 @@ public class EyePhoneClientScreenHandler extends ClientScreenHandler {
             phoneBgUpdateListener.accept(packetByteBuf.readString());
             phoneTypeUpdateListener.accept(packetByteBuf.readEnumConstant(ItemRegistry.class).path);
             phonePasswordUpdateListener.accept(packetByteBuf.readString());
+        } else if (packetAction == EyePhonePacketAction.PHONE_VERIFY_PASSWORD_FAIL.getActionOrdinal()) {
+            onPasswordFailure.run();
+        } else if (packetAction == EyePhonePacketAction.PHONE_VERIFY_PASSWORD_SUCCESS.getActionOrdinal()) {
+            onPasswordSuccess.run();
         }
     }
 
@@ -47,6 +54,12 @@ public class EyePhoneClientScreenHandler extends ClientScreenHandler {
         ScreenPacket.sendToServer(packetByteBuf);
     }
 
+    private void authenticatePassword(String password) {
+        final PacketByteBuf packetByteBuf = ScreenPacket.newPacket(syncId, EyePhonePacketAction.PHONE_VERIFY_PASSWORD.getActionOrdinal());
+        packetByteBuf.writeString(password);
+        ScreenPacket.sendToServer(packetByteBuf);
+    }
+
     public void setPhoneNameUpdateListener(Consumer<String> listener) {
         phoneNameUpdateListener = listener;
     }
@@ -59,11 +72,33 @@ public class EyePhoneClientScreenHandler extends ClientScreenHandler {
         this.phoneTypeUpdateListener = phoneTypeUpdateListener;
     }
 
-    public void setPhonePasswordUpdateListener(Consumer<String> phonePasswordUpdateListener) {
-        this.phonePasswordUpdateListener = phonePasswordUpdateListener;
+    public void appendPhonePasswordUpdateListener(Consumer<String> phonePasswordUpdateListener) {
+        final Consumer<String> previousListener = this.phonePasswordUpdateListener;
+        this.phonePasswordUpdateListener = (s) -> {
+            previousListener.accept(s);
+            phonePasswordUpdateListener.accept(s);
+        };
+    }
+
+    public void setOnPasswordSuccess(Runnable onPasswordSuccess) {
+        this.onPasswordSuccess = onPasswordSuccess;
+    }
+
+    public void setOnPasswordFailure(Runnable onPasswordFailure) {
+        this.onPasswordFailure = onPasswordFailure;
     }
 
     private static void dummy(String s) {
-        LOGGER.info("A dummy listener is used for parsing string of: {}", s);
+    }
+
+    private static void dummy() {
+    }
+
+    public void updatePasswordToUnlock(String password) {
+        contextPassword = password;
+    }
+
+    public void submitUnlockRequest() {
+        authenticatePassword(contextPassword);
     }
 }

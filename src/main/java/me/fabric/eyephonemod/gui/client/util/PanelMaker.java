@@ -3,7 +3,8 @@ package me.fabric.eyephonemod.gui.client.util;
 import me.fabric.eyephonemod.gui.client.EyePhoneScreen;
 import me.fabric.eyephonemod.gui.client.EyePhoneScreen.Apps;
 import me.fabric.eyephonemod.gui.client.element.*;
-import me.fabric.eyephonemod.gui.handler.eyephone.EyePhoneClientScreenHandler;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.LiteralText;
 
 import java.util.List;
@@ -31,7 +32,7 @@ public class PanelMaker {
 
         settingsPanel.addChild(new Label("Password", 30, 60));
         final TextField passwordField = newListeningTextField(72, screen.handler::updatePassword);
-        screen.handler.setPhonePasswordUpdateListener(passwordField::rewrite);
+        screen.handler.appendPhonePasswordUpdateListener(passwordField::rewrite);
         settingsPanel.addChild(passwordField);
 
         settingsPanel.addChild(new LabelledButton(30,
@@ -67,5 +68,28 @@ public class PanelMaker {
         final TexturedButton texturedButton = new TexturedButton(texture, Apps.BTN_SIZE, Apps.BTN_SIZE, x, y);
         texturedButton.setOnClickCallback(onClick);
         return texturedButton;
+    }
+
+    public static void configurePasswordPanel(EyePhoneScreen<?> screen, BottomRightAnchoredPanel passwordPanel) {
+        passwordPanel.addChild(new Label("Password", 30, 60));
+
+        final TextField passwordField = newListeningTextField(72, screen.handler::updatePasswordToUnlock);
+        passwordPanel.addChild(passwordField);
+
+        passwordPanel.addChild(new LabelledButton(30,
+                90,
+                BG_WIDTH - 60,
+                new LiteralText("Unlock"),
+                button -> screen.handler.submitUnlockRequest()));
+
+
+        final String wrongPasswordMsg = "Wrong Password!";
+        final int textWidth = MinecraftClient.getInstance().textRenderer.getWidth(wrongPasswordMsg);
+        final Label label = new Label(wrongPasswordMsg, (BG_WIDTH - textWidth) / 2, 120);
+        label.setColor(0xFFFF5500);
+        label.setVisible(false);
+        passwordPanel.addChild(label);
+
+        screen.handler.setOnPasswordFailure(() -> label.setVisible(true));
     }
 }
