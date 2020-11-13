@@ -1,6 +1,6 @@
 package me.fabric.eyephonemod.gui.client.element;
 
-import me.fabric.eyephonemod.gui.client.TextureSetting;
+import me.fabric.eyephonemod.gui.client.util.TextureSetting;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.sound.PositionedSoundInstance;

@@ -9,21 +9,26 @@ import net.minecraft.util.Identifier;
 public class EyePhoneContext {
     public String name;
     public String backgroundIdentifier;
-    private static final EyePhoneContext DEF_CONTEXT = new EyePhoneContext("EyePhone", EyePhoneMod.NAMESPACE + ":textures/background/default.png");
+    public String password;
+    private static final EyePhoneContext DEF_CONTEXT = new EyePhoneContext("EyePhone", EyePhoneMod.NAMESPACE + ":textures/background/default.png", "");
     public static final String PHONE_INFO = "phoneInfo";
-    private EyePhoneContext(String name, String backgroundIdentifier) {
+
+    private EyePhoneContext(String name, String backgroundIdentifier, String password) {
         this.name = name;
         this.backgroundIdentifier = backgroundIdentifier;
+        this.password = password;
     }
 
     public EyePhoneContext(CompoundTag itemStackTag) {
         if (!itemStackTag.contains(PHONE_INFO)) {
             this.name = DEF_CONTEXT.name;
             this.backgroundIdentifier = DEF_CONTEXT.backgroundIdentifier;
+            this.password = DEF_CONTEXT.password;
         } else {
             final CompoundTag phoneInfo = itemStackTag.getCompound(PHONE_INFO);
             this.name = getStringOrDefault(phoneInfo, Attr.NAME.camelCase, DEF_CONTEXT.name);
             this.backgroundIdentifier = getStringOrDefault(phoneInfo, Attr.BACKGROUND_ID.camelCase, DEF_CONTEXT.backgroundIdentifier);
+            this.password = getStringOrDefault(phoneInfo, Attr.PASSWORD.camelCase, DEF_CONTEXT.password);
         }
     }
 
@@ -60,6 +65,16 @@ public class EyePhoneContext {
             public void putInTag(CompoundTag tag, EyePhoneContext context) {
                 tag.putString(camelCase, context.backgroundIdentifier);
             }
+        },
+
+        PASSWORD {
+            public void setToContext(EyePhoneContext context, String value) {
+                context.password = value;
+            }
+
+            public void putInTag(CompoundTag tag, EyePhoneContext context) {
+                tag.putString(camelCase, context.password);
+            }
         };
 
         public final String camelCase = CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, name());
@@ -68,16 +83,9 @@ public class EyePhoneContext {
 
         public abstract void putInTag(CompoundTag tag, EyePhoneContext context);
 
-        public static Attr valueOfLowerCamel(String name) {
-            for (Attr value : values()) {
-                if (value.camelCase.equals(name)) return value;
-            }
-            throw new IllegalArgumentException("Cannot find " + name);
-        }
     }
 
-    public void updateTag(String key, String value) {
-        final Attr attrTarget = Attr.valueOfLowerCamel(key);
-        attrTarget.setToContext(this, value);
+    public void updateTag(Attr key, String value) {
+        key.setToContext(this, value);
     }
 }

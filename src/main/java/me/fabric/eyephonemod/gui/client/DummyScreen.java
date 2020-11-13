@@ -1,6 +1,7 @@
 package me.fabric.eyephonemod.gui.client;
 
 import me.fabric.eyephonemod.EyePhoneMod;
+import me.fabric.eyephonemod.gui.client.util.TextureSetting;
 import me.fabric.eyephonemod.gui.handler.ClientScreenHandler;
 import me.fabric.eyephonemod.gui.handler.dummy.DummyClientScreenHandler;
 import net.minecraft.client.gui.screen.ingame.ScreenHandlerProvider;

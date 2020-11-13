@@ -24,7 +24,7 @@ public class EyePhoneServerScreenHandler extends ServerScreenHandler {
     public EyePhoneServerScreenHandler(int syncId, ServerPlayerEntity player, ItemStack itemStack) {
         super(ScreenRegistry.EYEPHONE_GUI.getScreenHandlerType(), syncId);
         if (!(itemStack.getItem() instanceof ScreenHandlingItem))
-            throw new RuntimeException("ItemStack is not an item of TaggedItem!");
+            throw new RuntimeException("ItemStack is not an item of ScreenHandlingItem!");
         phone = itemStack;
         playerEntity = player;
         eyePhoneContext = new EyePhoneContext(phone.getOrCreateTag());
@@ -32,12 +32,10 @@ public class EyePhoneServerScreenHandler extends ServerScreenHandler {
 
     @Override
     public void onPacket(PacketByteBuf packetByteBuf, int packetAction) {
-        if (packetAction == EyePhonePacketAction.PHONE_NAME_UPDATE.getActionOrdinal()) {
-            updatePhoneName(packetByteBuf.readString());
-        } else if (packetAction == PacketAction.DefaultPacketAction.INIT.getActionOrdinal()) {
+        if (packetAction == PacketAction.DefaultPacketAction.INIT.getActionOrdinal()) {
             sendEntryUpdates();
         } else if (packetAction == EyePhonePacketAction.PHONE_ENTRY_UPDATE.getActionOrdinal()) {
-            final String key = packetByteBuf.readString();
+            final EyePhoneContext.Attr key = packetByteBuf.readEnumConstant(EyePhoneContext.Attr.class);
             final String value = packetByteBuf.readString();
             eyePhoneContext.updateTag(key, value);
         }
@@ -48,13 +46,8 @@ public class EyePhoneServerScreenHandler extends ServerScreenHandler {
         packetByteBuf.writeString(eyePhoneContext.name);
         packetByteBuf.writeString(eyePhoneContext.backgroundIdentifier);
         packetByteBuf.writeEnumConstant(((EyePhoneItem) phone.getItem()).getItemRegistry());
+        packetByteBuf.writeString(eyePhoneContext.password);
         ScreenPacket.sendToClient(packetByteBuf, playerEntity);
-    }
-
-    private void updatePhoneName(String name) {
-        final CompoundTag phoneInfo = phone.getOrCreateSubTag("phoneInfo");
-        phoneInfo.putString("name", name);
-        phone.putSubTag("phoneInfo", phoneInfo);
     }
 
     @Override

@@ -3,6 +3,8 @@ package me.fabric.eyephonemod.gui.client;
 import com.google.common.collect.Lists;
 import me.fabric.eyephonemod.EyePhoneMod;
 import me.fabric.eyephonemod.gui.client.element.BottomRightAnchoredPanel;
+import me.fabric.eyephonemod.gui.client.util.AnimationKeyframePlayer;
+import me.fabric.eyephonemod.gui.client.util.TextureSetting;
 import me.fabric.eyephonemod.gui.handler.ClientScreenHandler;
 import me.fabric.eyephonemod.gui.handler.eyephone.EyePhoneClientScreenHandler;
 import net.minecraft.client.MinecraftClient;
@@ -21,7 +23,7 @@ import org.lwjgl.opengl.GL11;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
-import static me.fabric.eyephonemod.gui.client.PanelMaker.*;
+import static me.fabric.eyephonemod.gui.client.util.PanelMaker.*;
 
 public class EyePhoneScreen<T extends ClientScreenHandler> extends BaseScreen<T> {
     public static final TextureSetting BG_TEXTURE = new TextureSetting(
@@ -30,7 +32,7 @@ public class EyePhoneScreen<T extends ClientScreenHandler> extends BaseScreen<T>
     );
     static final Identifier ID = new Identifier(EyePhoneMod.NAMESPACE, "textures/gui/eye_apps.png");
 
-    final EyePhoneClientScreenHandler handler;
+    public final EyePhoneClientScreenHandler handler;
     final AnimationKeyframePlayer<Integer> onShowAnimationPlayer = new AnimationKeyframePlayer<>(
             0, 8,
             (d, f, t) -> (int) ((t - f) * d + f),

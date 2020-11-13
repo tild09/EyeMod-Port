@@ -334,6 +334,11 @@ public class TextField implements DrawableElement {
         }
     }
 
+    public void rewrite(String s) {
+        clear();
+        write(s);
+    }
+
     private void write(char c) {
         int lower;
         int upper;
@@ -467,5 +472,12 @@ public class TextField implements DrawableElement {
     @Override
     public int getHeight() {
         return height;
+    }
+
+    private void clear() {
+        text = "";
+        releaseSelection();
+        cursor = 0;
+        selection = 0;
     }
 }

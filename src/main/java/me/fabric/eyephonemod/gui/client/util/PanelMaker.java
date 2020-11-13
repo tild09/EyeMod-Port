@@ -1,7 +1,9 @@
-package me.fabric.eyephonemod.gui.client;
+package me.fabric.eyephonemod.gui.client.util;
 
+import me.fabric.eyephonemod.gui.client.EyePhoneScreen;
 import me.fabric.eyephonemod.gui.client.EyePhoneScreen.Apps;
 import me.fabric.eyephonemod.gui.client.element.*;
+import me.fabric.eyephonemod.gui.handler.eyephone.EyePhoneClientScreenHandler;
 import net.minecraft.text.LiteralText;
 
 import java.util.List;
@@ -21,12 +23,16 @@ public class PanelMaker {
     }
 
     public static void configureSettingsPanel(EyePhoneScreen<?> screen, BottomRightAnchoredPanel settingsPanel) {
-        System.out.println("Setting up listeners");
         settingsPanel.addChild(new Label("Phone Name", 30, 20));
 
         final TextField textField = newListeningTextField(32, screen.handler::updatePhoneName);
-        screen.handler.setPhoneNameUpdateListener(textField::write);
+        screen.handler.setPhoneNameUpdateListener(textField::rewrite);
         settingsPanel.addChild(textField);
+
+        settingsPanel.addChild(new Label("Password", 30, 60));
+        final TextField passwordField = newListeningTextField(72, screen.handler::updatePassword);
+        screen.handler.setPhonePasswordUpdateListener(passwordField::rewrite);
+        settingsPanel.addChild(passwordField);
 
         settingsPanel.addChild(new LabelledButton(30,
                 BG_HEIGHT - 70,
@@ -36,7 +42,9 @@ public class PanelMaker {
     }
 
     private static TextField newListeningTextField(int y, Consumer<String> listener) {
-        return new TextField(BG_WIDTH - 60, listener, 30, y);
+        final TextField textField = new TextField(BG_WIDTH - 60, listener, 30, y);
+        textField.setMaxLength(20);
+        return textField;
     }
 
     public static void configureAppsPanel(EyePhoneScreen<?> screen, BottomRightAnchoredPanel appsPanel, List<Apps> availableApps) {

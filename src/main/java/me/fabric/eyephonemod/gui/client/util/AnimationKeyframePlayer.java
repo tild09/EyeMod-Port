@@ -1,4 +1,4 @@
-package me.fabric.eyephonemod.gui.client;
+package me.fabric.eyephonemod.gui.client.util;
 
 import net.minecraft.data.client.model.BlockStateVariantMap.TriFunction;
 

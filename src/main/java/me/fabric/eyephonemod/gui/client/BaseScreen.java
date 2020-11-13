@@ -2,6 +2,7 @@ package me.fabric.eyephonemod.gui.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.fabric.eyephonemod.gui.client.element.BottomRightAnchoredPanel;
+import me.fabric.eyephonemod.gui.client.util.TextureSetting;
 import me.fabric.eyephonemod.gui.handler.ClientScreenHandler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
