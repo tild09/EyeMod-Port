@@ -1,10 +1,8 @@
 package me.fabric.eyephonemod.gui.client;
 
 import me.fabric.eyephonemod.gui.client.EyePhoneScreen.Apps;
-import me.fabric.eyephonemod.gui.client.element.BottomRightAnchoredPanel;
-import me.fabric.eyephonemod.gui.client.element.Label;
-import me.fabric.eyephonemod.gui.client.element.TextField;
-import me.fabric.eyephonemod.gui.client.element.TexturedButton;
+import me.fabric.eyephonemod.gui.client.element.*;
+import net.minecraft.text.LiteralText;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -24,10 +22,17 @@ public class PanelMaker {
 
     public static void configureSettingsPanel(EyePhoneScreen<?> screen, BottomRightAnchoredPanel settingsPanel) {
         System.out.println("Setting up listeners");
-        settingsPanel.addChild(new Label("Phone Name", 40, 20));
+        settingsPanel.addChild(new Label("Phone Name", 30, 20));
+
         final TextField textField = newListeningTextField(32, screen.handler::updatePhoneName);
-        screen.handler.setPhoneBgUpdateListener(textField::write);
+        screen.handler.setPhoneNameUpdateListener(textField::write);
         settingsPanel.addChild(textField);
+
+        settingsPanel.addChild(new LabelledButton(30,
+                BG_HEIGHT - 70,
+                BG_WIDTH - 60,
+                new LiteralText("Return"),
+                button -> screen.requestChangePanel(null)));
     }
 
     private static TextField newListeningTextField(int y, Consumer<String> listener) {
@@ -38,8 +43,8 @@ public class PanelMaker {
         final int cols = 4;
         final int paddingX = 5;
         final int paddingY = 4;
-        final int marginX = 20;
-        final int marginY = 10;
+        final int marginX = 18;
+        final int marginY = 20;
 
         int i = 0;
         for (Apps availableApp : availableApps) {
