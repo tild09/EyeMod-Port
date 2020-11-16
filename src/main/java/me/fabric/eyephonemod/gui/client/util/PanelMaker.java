@@ -81,7 +81,6 @@ public class PanelMaker {
                 new LiteralText("Unlock"),
                 button -> screen.handler.submitUnlockRequest()));
 
-
         final String wrongPasswordMsg = "Wrong Password!";
         final int textWidth = MinecraftClient.getInstance().textRenderer.getWidth(wrongPasswordMsg);
         final Label label = new Label(wrongPasswordMsg, (BG_WIDTH - textWidth) / 2, 120);

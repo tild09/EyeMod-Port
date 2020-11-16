@@ -27,11 +27,7 @@ import java.util.Optional;
 import static me.fabric.eyephonemod.gui.client.util.PanelMaker.*;
 
 public class EyePhoneScreen<T extends ClientScreenHandler> extends BaseScreen<T> {
-    public static final TextureSetting BG_TEXTURE = new TextureSetting(
-            new Identifier(EyePhoneMod.NAMESPACE, "textures/gui/eyepod_gui.png"),
-            SIZE, SIZE
-    );
-    static final Identifier ID = new Identifier(EyePhoneMod.NAMESPACE, "textures/gui/eye_apps.png");
+    static final Identifier APPS_ID = new Identifier(EyePhoneMod.NAMESPACE, "textures/gui/eye_apps.png");
 
     public final EyePhoneClientScreenHandler handler;
     final AnimationKeyframePlayer<Integer> onShowAnimationPlayer = new AnimationKeyframePlayer<>(
@@ -50,6 +46,9 @@ public class EyePhoneScreen<T extends ClientScreenHandler> extends BaseScreen<T>
 
     @Nullable
     private TextureSetting customBackground = null;
+
+    @Nullable
+    private TextureSetting caseColor = null;
     private int currentY = 0;
 
     public EyePhoneScreen(@NotNull T handler, @NotNull PlayerInventory inventory, @NotNull Text title) {
@@ -61,6 +60,11 @@ public class EyePhoneScreen<T extends ClientScreenHandler> extends BaseScreen<T>
         this.backgroundHeight = BG_HEIGHT;
         setWidgets();
         this.handler.setPhoneBgUpdateListener(this::updateBackgroundIdentifier);
+        this.handler.setPhoneTypeUpdateListener(this::setPhoneGui);
+    }
+
+    private void setPhoneGui(String path) {
+        caseColor = new TextureSetting(new Identifier(EyePhoneMod.NAMESPACE, path), SIZE, SIZE);
     }
 
     private void setWidgets() {
@@ -152,7 +156,7 @@ public class EyePhoneScreen<T extends ClientScreenHandler> extends BaseScreen<T>
 
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        if (customBackground == null) return;
+        if (customBackground == null || caseColor == null) return;
         updateYPlayer();
         parents.forEach(p -> p.setBottomPadding(PADDING - 8 + currentY));
         super.render(matrices, mouseX, mouseY, delta);
@@ -160,7 +164,7 @@ public class EyePhoneScreen<T extends ClientScreenHandler> extends BaseScreen<T>
         final MinecraftClient mc = MinecraftClient.getInstance();
         GL11.glEnable(GL11.GL_SCISSOR_TEST);
         GL11.glScissor(0, 0, mc.getWindow().getFramebufferWidth(), mc.getWindow().getFramebufferHeight());
-        final TextureSetting texture = BG_TEXTURE;
+        final TextureSetting texture = caseColor;
         MinecraftClient.getInstance().getTextureManager().bindTexture(texture.textureId);
         drawTexture(
                 matrices,
@@ -196,7 +200,7 @@ public class EyePhoneScreen<T extends ClientScreenHandler> extends BaseScreen<T>
         Apps() {
             final int offsetX = Math.floorMod(ordinal(), COLS) * BTN_SIZE;
             final int offsetY = Math.floorDiv(ordinal(), COLS) * BTN_SIZE;
-            texture = new TextureSetting(ID, TEXTURE_SIZE, TEXTURE_SIZE, offsetX, offsetY);
+            texture = new TextureSetting(APPS_ID, TEXTURE_SIZE, TEXTURE_SIZE, offsetX, offsetY);
         }
     }
 }

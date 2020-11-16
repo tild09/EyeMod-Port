@@ -36,7 +36,7 @@ public class EyePhoneClientScreenHandler extends ClientScreenHandler {
         if (packetAction == EyePhonePacketAction.PHONE_ENTRIES_UPDATE.getActionOrdinal()) {
             phoneNameUpdateListener.accept(packetByteBuf.readString());
             phoneBgUpdateListener.accept(packetByteBuf.readString());
-            phoneTypeUpdateListener.accept(packetByteBuf.readEnumConstant(ItemRegistry.class).path);
+            phoneTypeUpdateListener.accept(packetByteBuf.readEnumConstant(ItemRegistry.class).eyephoneGuiTextureName);
             phonePasswordUpdateListener.accept(packetByteBuf.readString());
         } else if (packetAction == EyePhonePacketAction.PHONE_VERIFY_PASSWORD_FAIL.getActionOrdinal()) {
             onPasswordFailure.run();

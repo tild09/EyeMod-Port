@@ -10,13 +10,6 @@ import net.minecraft.util.registry.Registry;
 import java.util.function.Function;
 
 public enum ItemRegistry {
-    // deprecated
-    BLACK_COVER(DummyItem::new),
-    COVER(DummyItem::new),
-    RED_DISPLAY(DummyItem::new),
-    EYEPHONE(EyePhoneItem::new),
-    EYEPHONE_OP(DummyItem::new),
-
     // phones components
     DISPLAY(DummyItem::new),
     BATTERY(DummyItem::new),
@@ -65,6 +58,7 @@ public enum ItemRegistry {
     public final boolean isPhone;
     private final Function<Item.Settings, Item> itemSupplier;
     private volatile Item item = null;
+    public final String eyephoneGuiTextureName;
 
     ItemRegistry(Function<Item.Settings, Item> itemSupplier) {
         this(itemSupplier, false);
@@ -74,6 +68,11 @@ public enum ItemRegistry {
         this.path = name().toLowerCase();
         this.itemSupplier = itemSupplier;
         this.isPhone = isPhone;
+        if (isPhone) {
+            this.eyephoneGuiTextureName = ("textures/gui/eyephone_gui/eye" + name() + ".png").toLowerCase();
+        } else {
+            this.eyephoneGuiTextureName = null;
+        }
     }
 
     public static void registerItems(String namespace) {

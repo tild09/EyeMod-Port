@@ -38,6 +38,7 @@ public class TextField implements DrawableElement {
     private int textColor = 0xFFFFFFFF;
     private int focusedBgColor = 0xFF000000;
     private int outFocusedBgColor = 0xFF222222;
+    private boolean editable = true;
 
     public TextField(int width, Consumer<String> textListener, int x, int y) {
         this.width = width;
@@ -359,7 +360,7 @@ public class TextField implements DrawableElement {
 
     @Override
     public boolean charTyped(char chr, int keyCode) {
-        if (!isFocused() || hasReachMaxLength()) return false;
+        if (!isFocused() || !editable || hasReachMaxLength()) return false;
         write(chr);
         sendTextUpdate();
         return true;
@@ -475,5 +476,9 @@ public class TextField implements DrawableElement {
         releaseSelection();
         cursor = 0;
         selection = 0;
+    }
+
+    public void setEditable(boolean editable) {
+        this.editable = editable;
     }
 }
